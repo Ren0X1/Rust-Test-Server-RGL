@@ -1,0 +1,24 @@
+# ─── Binarios del servidor (~5,8 GB): NO van al repo ───────────────
+# Se instalan con instalar.bat
+/steamcmd/
+/server/*
+
+# ─── Excepciones: la config y los plugins SI van al repo ───────────
+!/server/oxide/
+/server/oxide/*
+!/server/oxide/plugins/
+/server/oxide/plugins/*
+!/server/oxide/plugins/*.cs
+
+!/server/server/
+/server/server/*
+!/server/server/skintest/
+/server/server/skintest/*
+!/server/server/skintest/cfg/
+/server/server/skintest/cfg/*
+!/server/server/skintest/cfg/server.cfg
+!/server/server/skintest/cfg/users.cfg
+
+# ─── Logs y temporales ─────────────────────────────────────────────
+*.log
+prueba_*.log
