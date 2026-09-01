@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version de la release (ej: v1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Crear release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el repo
+        uses: actions/checkout@v4
+
+      - name: Determinar la version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comprobar que los plugins estan
+        run: |
+          set -e
+          for p in SkinTestMenu CreativeSetup Skins BuildingSkins WorkshopSkinViewer ImageLibrary Godmode Vanish; do
+            test -f "server/oxide/plugins/$p.cs" || { echo "::error::Falta el plugin $p.cs"; exit 1; }
+          done
+          test -f server/server/skintest/cfg/server.cfg || { echo "::error::Falta server.cfg"; exit 1; }
+          test -f start.bat || { echo "::error::Falta start.bat"; exit 1; }
+          echo "Todo en su sitio."
+
+      - name: Preparar el paquete
+        id: pack
+        run: |
+          set -e
+          NAME="Rust-Test-Server-RGL-${{ steps.ver.outputs.tag }}"
+          mkdir -p "dist/$NAME"
+          cp -r \
+            start.bat instalar.bat actualizar_servidor.bat actualizar_oxide.bat \
+            README.md .gitignore comandos_rust_referencia.txt docs server \
+            "dist/$NAME/"
+          cd dist && zip -qr "../$NAME.zip" "$NAME"
+          echo "zip=$NAME.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Publicar la release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: ${{ steps.ver.outputs.tag }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: ${{ steps.pack.outputs.zip }}
+          body: |
+            ## 🎨 Servidor local de Rust para testear skins
+
+            Paquete listo para usar. **No incluye los binarios del servidor** (~6 GB):
+            los descarga `instalar.bat`.
+
+            ### 🚀 Instalacion
+
+            1. Descomprime el zip donde quieras.
+            2. Ejecuta **`instalar.bat`** (baja SteamCMD + el servidor + Oxide).
+            3. Pon tu SteamID64 en `server\server\skintest\cfg\users.cfg`.
+            4. Ejecuta **`start.bat`**.
+            5. En Rust pulsa **F1** y escribe `client.connect localhost:28015`.
+
+            ### 📋 Que incluye
+
+            - Modo creativo nativo activado para todo el servidor
+            - `/menu` — spawner de items por categorias con iconos
+            - `/sk` — skins del item que lleves en la mano
+            - `docs/SKINS.md` — las 5800 skins con sus IDs
+            - `docs/ITEMS.md` — los 1252 items con shortname e itemid

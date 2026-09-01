@@ -18,6 +18,20 @@
 
 ---
 
+## 🖱️ Menus con interfaz
+
+Dos menus propios, sin salir del juego:
+
+| Comando | Qué abre |
+|---|---|
+| `/menu` · `/items` | 📦 **Spawner de items.** Los **1252 items** con su icono, ordenados por categoría, con buscador y selector de cantidad (x1 / x10 / x100 / x1000 / stack completo). Clic en un item y te lo da. |
+| `/sk` · `/skinmenu` | 🎨 **Skins del item que llevas en la mano.** Cada skin se previsualiza con su icono real, con buscador por nombre o ID y botón para quitarla. Clic y se aplica al instante. |
+
+En el spawner, la pestaña **CON SKINS** filtra solo los items que tienen skins,
+y cada celda te dice cuántas tiene. 🟢
+
+---
+
 ## 🎨 Comandos de skins
 
 | Comando | Qué hace |
@@ -94,7 +108,26 @@ teleportpos x y z   # 📍 Teletransporte
 | **ImageLibrary** | 🖼️ Dependencia de BuildingSkins |
 | **Godmode** | 🛡️ `/god` |
 | **Vanish** | 👻 `/vanish` |
+| **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, y el exportador de Markdown |
 | **CreativeSetup** | ⭐ *Propio.* Desbloquea blueprints al entrar, fija el mediodía y concede los permisos. |
+
+---
+
+## 📖 Listas completas (Markdown)
+
+Por si prefieres copiar y pegar IDs en vez de usar el menú:
+
+| Fichero | Contenido |
+|---|---|
+| [`docs/SKINS.md`](docs/SKINS.md) | 🎨 Las **5800 skins** del juego con su ID, agrupadas por item y con índice. |
+| [`docs/ITEMS.md`](docs/ITEMS.md) | 📦 Los **1252 items** con `shortname`, `itemid` y cuántas skins tiene cada uno. |
+
+Se generan solos desde los datos del propio servidor. Para regenerarlos tras un
+parche de Rust, ejecuta en la consola **F1**:
+
+```bash
+skintest.exportmd
+```
 
 ---
 
@@ -120,3 +153,18 @@ Cuando Facepunch saque un parche y el servidor deje de arrancar:
 
 Los binarios del servidor (~5,8 GB) **no están versionados** — los descarga `instalar.bat`.
 En el repo solo va lo que importa: los scripts, la configuración y los plugins. ✅
+
+---
+
+## 🏷️ Releases
+
+Hay un workflow de GitHub Actions que empaqueta el proyecto y publica una release.
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+También se puede lanzar a mano desde la pestaña **Actions → Release → Run workflow**
+indicando la versión. El zip que sube lleva los scripts, la config, los plugins y los
+`docs/` — pero no los ~6 GB de binarios, que los baja `instalar.bat`. 📦

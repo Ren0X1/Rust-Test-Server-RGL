@@ -22,3 +22,4 @@
 # ─── Logs y temporales ─────────────────────────────────────────────
 *.log
 prueba_*.log
+probe.txt
