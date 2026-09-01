@@ -137,6 +137,23 @@ namespace Oxide.Plugins
         }
 
         // ─────────────────────────────────────────────────────────────
+        //  Alimentar al plugin Skins (/skin)
+        //
+        //  Skins de misticos no trae ninguna skin: espera que se las den
+        //  por su config o por este hook. Sin esto, /skin abre la caja vacia.
+        // ─────────────────────────────────────────────────────────────
+        void OnSkinsFetch(BasePlayer player, ItemDefinition info, List<ulong> skins)
+        {
+            if (info == null || skins == null || _skinsByItem == null) return;
+
+            List<KeyValuePair<ulong, string>> list;
+            if (!_skinsByItem.TryGetValue(info.shortname, out list)) return;
+
+            for (var i = 0; i < list.Count; i++)
+                skins.Add(list[i].Key);
+        }
+
+        // ─────────────────────────────────────────────────────────────
         //  Comandos de chat
         // ─────────────────────────────────────────────────────────────
         [ChatCommand("menu")]

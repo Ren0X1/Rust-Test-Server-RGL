@@ -36,7 +36,7 @@ y cada celda te dice cuántas tiene. 🟢
 
 | Comando | Qué hace |
 |---|---|
-| `/skin` · `/skins` | 📦 **El skin box.** Con un item en la mano, abre la lista de skins del workshop y la aplica. |
+| `/skin` · `/skins` | 📦 Skin box del plugin Skins *(alimentado por SkinTestMenu: de fábrica viene vacío)* |
 | `/bskin` | 🧱 Menú de skins para bloques de construcción. |
 | `/wskin <id>` | 🔎 Aplica una skin concreta del workshop por su ID (la del enlace de Steam). |
 
@@ -113,7 +113,7 @@ teleportpos x y z   # 📍 Teletransporte
 | **ImageLibrary** | 🖼️ Dependencia de BuildingSkins |
 | **Godmode** | 🛡️ `/god` |
 | **Vanish** | 👻 `/vanish` |
-| **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, y el exportador de Markdown |
+| **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, el exportador de Markdown, y alimenta con skins al plugin Skins vía `OnSkinsFetch` |
 | **CreativeSetup** | ⭐ *Propio.* Desbloquea blueprints al entrar, fija el mediodía y concede los permisos. |
 
 ---
