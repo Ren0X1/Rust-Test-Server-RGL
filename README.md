@@ -124,7 +124,7 @@ Por si prefieres copiar y pegar IDs en vez de usar el menú:
 
 | Fichero | Contenido |
 |---|---|
-| [`docs/SKINS.md`](docs/SKINS.md) | 🎨 Las **5800 skins** del juego con su ID, agrupadas por item y con índice. |
+| [`docs/SKINS.md`](docs/SKINS.md) | 🎨 Las **6266 skins** del juego con su ID de workshop, agrupadas por item y con índice. |
 | [`docs/ITEMS.md`](docs/ITEMS.md) | 📦 Los **1252 items** con `shortname`, `itemid` y cuántas skins tiene cada uno. |
 
 Se generan solos desde los datos del propio servidor. Para regenerarlos tras un

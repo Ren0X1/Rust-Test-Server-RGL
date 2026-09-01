@@ -23,3 +23,5 @@
 *.log
 prueba_*.log
 probe.txt
+*probe.txt
+verify*.txt

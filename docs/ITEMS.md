@@ -87,12 +87,12 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | BDU shirt | `bdu.shirt` | `-2127311451` | - |
 | Bone Armor | `bone.armor.suit` | `1746956556` | - |
 | Frog Boots | `boots.frog` | `-1000573653` | - |
-| Bucket Helmet | `bucket.helmet` | `850280505` | 13 |
+| Bucket Helmet | `bucket.helmet` | `850280505` | 14 |
 | Bunny Costume | `bunny.suit` | `1285226495` | - |
-| Leather Gloves | `burlap.gloves` | `1366282552` | 41 |
+| Leather Gloves | `burlap.gloves` | `1366282552` | 42 |
 | Burlap Gloves | `burlap.gloves.new` | `21402876` | - |
 | Burlap Headwrap | `burlap.headwrap` | `1877339384` | 24 |
-| Burlap Shirt | `burlap.shirt` | `602741290` | 33 |
+| Burlap Shirt | `burlap.shirt` | `602741290` | 34 |
 | Burlap Shoes | `burlap.shoes` | `-761829530` | 4 |
 | Burlap Trousers | `burlap.trousers` | `1992974553` | 24 |
 | Chicken Costume | `chicken.costume` | `-152332823` | - |
@@ -102,7 +102,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Coconut Armor Helmet | `cocoknight.armor.helmet` | `-582467439` | - |
 | Coconut Armor Pants | `cocoknight.armor.pants` | `507284030` | - |
 | Coconut Armor Chestplate | `cocoknight.armor.torso` | `1426097945` | - |
-| Coffee Can Helmet | `coffeecan.helmet` | `-803263829` | 121 |
+| Coffee Can Helmet | `coffeecan.helmet` | `-803263829` | 122 |
 | Crate Costume | `cratecostume` | `1189981699` | - |
 | Bone Helmet | `deer.skull.mask` | `-1903165497` | 8 |
 | Diving Fins | `diving.fins` | `296519935` | - |
@@ -128,12 +128,12 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Hot Air Balloon Armor | `hab.armor` | `-1989600732` | - |
 | Mummy Suit | `halloween.mummysuit` | `277730763` | - |
 | Surgeon Scrubs | `halloween.surgeonsuit` | `-1785231475` | - |
-| Beenie Hat | `hat.beenie` | `1675639563` | 2 |
-| Boonie Hat | `hat.boonie` | `-23994173` | 25 |
+| Beenie Hat | `hat.beenie` | `1675639563` | 8 |
+| Boonie Hat | `hat.boonie` | `-23994173` | 26 |
 | Bunny Hat | `hat.bunnyhat` | `23391694` | - |
-| Candle Hat | `hat.candle` | `1714496074` | - |
+| Candle Hat | `hat.candle` | `1714496074` | 1 |
 | Birthday Candle Hat | `hat.candle.birthday` | `1633553557` | - |
-| Baseball Cap | `hat.cap` | `-1022661119` | 11 |
+| Baseball Cap | `hat.cap` | `-1022661119` | 18 |
 | Dragon Mask | `hat.dragonmask` | `-22883916` | - |
 | Gas Mask | `hat.gas.mask` | `1659114910` | - |
 | Horse Mask | `hat.horsemask` | `-418359052` | - |
@@ -144,9 +144,9 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Snake mask | `hat.snakemask` | `-1314079879` | - |
 | Tiger Mask | `hat.tigermask` | `709206314` | - |
 | Wellipets Hat | `hat.wellipets` | `-507248640` | - |
-| Wolf Headdress | `hat.wolf` | `-1478212975` | - |
+| Wolf Headdress | `hat.wolf` | `-1478212975` | 8 |
 | Krieg Hazmat | `hazmat.krieg` | `-902423513` | - |
-| Hazmat Suit | `hazmatsuit` | `1266491000` | - |
+| Hazmat Suit | `hazmatsuit` | `1266491000` | 9 |
 | Arctic Suit | `hazmatsuit.arcticsuit` | `-470439097` | - |
 | Abyss Hazmat | `hazmatsuit.diver` | `-797592358` | - |
 | Frontier Suit | `hazmatsuit.frontier` | `-105415879` | - |
@@ -164,9 +164,9 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Heavy Plate Helmet | `heavy.plate.helmet` | `1181207482` | - |
 | Heavy Plate Jacket | `heavy.plate.jacket` | `-1102429027` | - |
 | Heavy Plate Pants | `heavy.plate.pants` | `-1778159885` | - |
-| Hoodie | `hoodie` | `1751045826` | 214 |
+| Hoodie | `hoodie` | `1751045826` | 223 |
 | Lunar New Year Horse Armor | `horse.armor.lny26` | `-2068194497` | - |
-| Roadsign Horse Armor | `horse.armor.roadsign` | `60528587` | - |
+| Roadsign Horse Armor | `horse.armor.roadsign` | `60528587` | 1 |
 | Wooden Horse Armor | `horse.armor.wood` | `1659447559` | - |
 | Horse Costume | `horse.costume` | `1420547167` | - |
 | Horse Saddle | `horse.saddle` | `-1997543660` | - |
@@ -176,8 +176,8 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | High Quality Horse Shoes | `horse.shoes.advanced` | `1989785143` | - |
 | Basic Horse Shoes | `horse.shoes.basic` | `-1211268013` | - |
 | Improvised Shield | `improvised.shield` | `196784377` | - |
-| Jacket | `jacket` | `-1163532624` | 40 |
-| Snow Jacket | `jacket.snow` | `-48090175` | 9 |
+| Jacket | `jacket` | `-1163532624` | 49 |
+| Snow Jacket | `jacket.snow` | `-48090175` | 11 |
 | Jumpsuit | `jumpsuit.suit` | `-97459906` | - |
 | Blue Jumpsuit | `jumpsuit.suit.blue` | `1601468620` | - |
 | Waterwell NPC Jumpsuit | `jumpsuit.waterwellnpc` | `-874908751` | - |
@@ -185,14 +185,14 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Knights armour skirt plates | `knightsarmour.skirt` | `-945708533` | - |
 | Knights armour cuirass | `knighttorso.armour` | `547862680` | - |
 | Krieg Large Backpack | `kriegbackpack` | `-874650016` | - |
-| Large Backpack | `largebackpack` | `-907422733` | 47 |
+| Large Backpack | `largebackpack` | `-907422733` | 48 |
 | Lumberjack Hoodie | `lumberjack hoodie` | `-763071910` | - |
-| Improvised Balaclava | `mask.balaclava` | `-2012470695` | 14 |
-| Bandana Mask | `mask.bandana` | `-702051347` | 42 |
-| Metal Facemask | `metal.facemask` | `-194953424` | 200 |
+| Improvised Balaclava | `mask.balaclava` | `-2012470695` | 25 |
+| Bandana Mask | `mask.bandana` | `-702051347` | 53 |
+| Metal Facemask | `metal.facemask` | `-194953424` | 202 |
 | Hockey Mask | `metal.facemask.hockey` | `-1334569149` | - |
 | Ice Metal Facemask | `metal.facemask.icemask` | `110116923` | - |
-| Metal Chest Plate | `metal.plate.torso` | `1110385766` | 163 |
+| Metal Chest Plate | `metal.plate.torso` | `1110385766` | 164 |
 | Ice Metal Chest Plate | `metal.plate.torso.icevest` | `-1478855279` | - |
 | Metal Shield | `metal.shield` | `625599716` | - |
 | Minigun Ammo Pack | `minigunammopack` | `355877490` | - |
@@ -202,7 +202,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Night Vision Goggles | `nightvisiongoggles` | `-1518883088` | - |
 | Outbreak Scientist Suit | `oubreak_scientist` | `-2133781216` | - |
 | Paintball Overalls | `paintballoveralls.suit` | `-1014934560` | - |
-| Pants | `pants` | `237239288` | 174 |
+| Pants | `pants` | `237239288` | 181 |
 | Shorts | `pants.shorts` | `-1695367501` | 6 |
 | Parachute | `parachute` | `602628465` | - |
 | Parachute (Deployed) | `parachute.deployed` | `1784005657` | - |
@@ -211,8 +211,8 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Reinforced Wooden Shield | `reinforced.wooden.shield` | `969768382` | - |
 | Riot Helmet | `riot.helmet` | `671063303` | 16 |
 | Road Sign Gloves | `roadsign.gloves` | `-699558439` | 63 |
-| Road Sign Jacket | `roadsign.jacket` | `-2002277461` | 128 |
-| Road Sign Kilt | `roadsign.kilt` | `1850456855` | 134 |
+| Road Sign Jacket | `roadsign.jacket` | `-2002277461` | 129 |
+| Road Sign Kilt | `roadsign.kilt` | `1850456855` | 135 |
 | Santa Beard | `santabeard` | `2126889441` | - |
 | Santa Hat | `santahat` | `-575483084` | - |
 | Scarecrow Suit | `scarecrow.suit` | `273951840` | - |
@@ -220,10 +220,10 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Heavy Scientist Suit | `scientistsuit_heavy` | `-1772746857` | - |
 | Shirt | `shirt.collared` | `-2025184684` | 7 |
 | Tank Top | `shirt.tanktop` | `1608640313` | 1 |
-| Boots | `shoes.boots` | `-1549739227` | 92 |
+| Boots | `shoes.boots` | `-1549739227` | 98 |
 | Silly Horse Mask | `silly.horse.mask` | `1849409072` | - |
 | Small Backpack | `smallbackpack` | `2068884361` | - |
-| Sunglasses | `sunglasses` | `352321488` | - |
+| Sunglasses | `sunglasses` | `352321488` | 8 |
 | Sunglasses | `sunglasses02black` | `1258768145` | - |
 | Sunglasses | `sunglasses02camo` | `-2103694546` | - |
 | Sunglasses | `sunglasses02red` | `1557173737` | - |
@@ -231,15 +231,15 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Sunglasses | `sunglasses03chrome` | `-1997698639` | - |
 | Sunglasses | `sunglasses03gold` | `-1408336705` | - |
 | Tactical Gloves | `tactical.gloves` | `-1108136649` | 17 |
-| T-Shirt | `tshirt` | `223891266` | 5 |
-| Longsleeve T-Shirt | `tshirt.long` | `935692442` | 6 |
-| Headset | `twitch.headset` | `-1569700847` | - |
+| T-Shirt | `tshirt` | `223891266` | 23 |
+| Longsleeve T-Shirt | `tshirt.long` | `935692442` | 18 |
+| Headset | `twitch.headset` | `-1569700847` | 1 |
 | Twitch Rivals Flag | `twitchrivalsflag` | `-739993590` | - |
 | Purple Sunglasses | `twitchsunglasses` | `20489901` | - |
-| Wood Armor Helmet | `wood.armor.helmet` | `-2094954543` | - |
-| Wood Chestplate | `wood.armor.jacket` | `418081930` | - |
-| Wood Armor Pants | `wood.armor.pants` | `832133926` | - |
-| Wood Armor Gloves | `woodarmor.gloves` | `-459159118` | - |
+| Wood Armor Helmet | `wood.armor.helmet` | `-2094954543` | 1 |
+| Wood Chestplate | `wood.armor.jacket` | `418081930` | 1 |
+| Wood Armor Pants | `wood.armor.pants` | `832133926` | 1 |
+| Wood Armor Gloves | `woodarmor.gloves` | `-459159118` | 1 |
 | Wooden Shield | `wooden.shield` | `1604837581` | - |
 
 ## Component (68)
@@ -330,17 +330,17 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Beehive | `beehive` | `184516676` | - |
 | Boat Building Plan | `boat.planner` | `-321247698` | - |
 | Building Plan | `building.planner` | `1525520776` | - |
-| Tool Cupboard | `cupboard.tool` | `-97956382` | - |
+| Tool Cupboard | `cupboard.tool` | `-97956382` | 2 |
 | Retro Tool Cupboard | `cupboard.tool.retro` | `1488606552` | - |
 | Shockbyte Tool Cupboard | `cupboard.tool.shockbyte` | `1174957864` | - |
 | Door Closer | `door.closer` | `1409529282` | - |
 | Wooden Frontier Bar Doors | `door.double.hinged.bardoors` | `-1151332840` | - |
-| Sheet Metal Double Door | `door.double.hinged.metal` | `1390353317` | 81 |
+| Sheet Metal Double Door | `door.double.hinged.metal` | `1390353317` | 82 |
 | Armored Double Door | `door.double.hinged.toptier` | `1221063409` | 26 |
 | Wood Double Door | `door.double.hinged.wood` | `-1336109173` | 16 |
 | Wooden Boat Door | `door.hinged.boat.wood` | `-1063073030` | - |
 | Industrial Door | `door.hinged.industrial.a` | `818733919` | - |
-| Sheet Metal Door | `door.hinged.metal` | `-2067472972` | 289 |
+| Sheet Metal Door | `door.hinged.metal` | `-2067472972` | 292 |
 | Armored Door | `door.hinged.toptier` | `1353298668` | 74 |
 | Wooden Door | `door.hinged.wood` | `1729120840` | 98 |
 | Factory Door | `factorydoor` | `2054391128` | - |
@@ -352,13 +352,13 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Armored Triangle Ladder Hatch | `floor.triangle.ladder.hatch.toptier` | `-478923685` | - |
 | High External Adobe Gate | `gates.external.high.adobe` | `-401905610` | - |
 | High External Legacy Gate | `gates.external.high.legacy` | `-1442339204` | - |
-| High External Stone Gate | `gates.external.high.stone` | `-691113464` | - |
-| High External Wooden Gate | `gates.external.high.wood` | `-335089230` | - |
+| High External Stone Gate | `gates.external.high.stone` | `-691113464` | 1 |
+| High External Wooden Gate | `gates.external.high.wood` | `-335089230` | 1 |
 | Industrial Garage Door | `industrial.garagedoor` | `346569548` | - |
 | Wooden Boat Ladder | `ladder.wooden.boat` | `255305250` | - |
 | Wooden Ladder | `ladder.wooden.wall` | `-316250604` | - |
 | Legacy Wood Shelter | `legacy.shelter.wood` | `607400343` | - |
-| Code Lock | `lock.code` | `1159991980` | - |
+| Code Lock | `lock.code` | `1159991980` | 1 |
 | Flight Control Codelock | `lock.code.a.pilot` | `1586884551` | - |
 | Key Lock | `lock.key` | `-850982208` | - |
 | Medieval Sheet Metal Double Door | `medieval.door.double.hinged.metal` | `-380502678` | - |
@@ -369,17 +369,17 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Metal horizontal embrasure | `shutter.metal.embrasure.a` | `-1199897169` | - |
 | Metal Vertical embrasure | `shutter.metal.embrasure.b` | `-1199897172` | - |
 | Wood Shutters | `shutter.wood.a` | `-1023374709` | - |
-| High External Wooden Wall | `wall.external.high` | `99588025` | - |
+| High External Wooden Wall | `wall.external.high` | `99588025` | 1 |
 | High External Adobe Wall | `wall.external.high.adobe` | `756890702` | - |
 | High Ice Wall | `wall.external.high.ice` | `-985781766` | - |
 | High External Legacy Wall | `wall.external.high.legacy` | `-1993883724` | - |
-| High External Stone Wall | `wall.external.high.stone` | `-967648160` | - |
+| High External Stone Wall | `wall.external.high.stone` | `-967648160` | 1 |
 | Prison Cell Wall | `wall.frame.cell` | `-1429456799` | - |
 | Prison Cell Gate | `wall.frame.cell.gate` | `-956706906` | - |
 | Chainlink Fence | `wall.frame.fence` | `-1117626326` | - |
 | Chainlink Fence Gate | `wall.frame.fence.gate` | `1451568081` | - |
 | Garage Door | `wall.frame.garagedoor` | `-148794216` | 239 |
-| Lunar Wall Frame Inlay | `wall.frame.lunar2025_a` | `1115193056` | - |
+| Lunar Wall Frame Inlay | `wall.frame.lunar2025_a` | `1115193056` | 2 |
 | Lunar Wall Frame Inlay | `wall.frame.lunar2025_b` | `-450890885` | - |
 | Lunar Wall Frame Inlay | `wall.frame.lunar2025_c` | `-2016974826` | - |
 | Netting | `wall.frame.netting` | `1516985844` | - |
@@ -389,7 +389,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Metal Window Bars | `wall.window.bars.metal` | `-819720157` | - |
 | Reinforced Glass Window | `wall.window.bars.toptier` | `671706427` | - |
 | Wooden Window Bars | `wall.window.bars.wood` | `-1183726687` | - |
-| Strengthened Glass Window | `wall.window.glass.reinforced` | `-1614955425` | - |
+| Strengthened Glass Window | `wall.window.glass.reinforced` | `-1614955425` | 1 |
 | Watch Tower | `watchtower.wood` | `-463122489` | - |
 | Large Water Catcher | `water.catcher.large` | `-1100168350` | - |
 | Small Water Catcher | `water.catcher.small` | `-132247350` | - |
@@ -399,10 +399,10 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 
 | Nombre | shortname | itemid | Skins |
 |---|---|---|---|
-| Auto Turret | `autoturret` | `-2139580305` | 12 |
-| Ceiling Light | `ceilinglight` | `1142993169` | - |
+| Auto Turret | `autoturret` | `-2139580305` | 13 |
+| Ceiling Light | `ceilinglight` | `1142993169` | 1 |
 | Command Block | `command.block` | `-1247485104` | - |
-| Computer Station | `computerstation` | `-1588628467` | - |
+| Computer Station | `computerstation` | `-1588628467` | 1 |
 | AND Switch | `electric.andswitch` | `1171735914` | - |
 | Audio Alarm | `electric.audioalarm` | `2100007442` | - |
 | Large Rechargeable Battery | `electric.battery.rechargable.large` | `553270375` | - |
@@ -421,7 +421,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Fluorescent Light | `electric.fluorescentlight` | `1892536031` | - |
 | Ceiling Fluorescent Light | `electric.fluorescentlight.ceiling` | `640470230` | - |
 | Small Generator | `electric.fuelgenerator.small` | `1849887541` | - |
-| Electric Furnace | `electric.furnace` | `-1196547867` | 13 |
+| Electric Furnace | `electric.furnace` | `-1196547867` | 14 |
 | Test Generator | `electric.generator.small` | `-295829489` | - |
 | HBHF Sensor | `electric.hbhfsensor` | `-1507239837` | - |
 | Electric Heater | `electric.heater` | `-784870360` | - |
@@ -464,11 +464,11 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Industrial Crafter | `industrial.crafter` | `1430085198` | - |
 | Industrial Electric Furnace | `industrial.electric.furnace` | `225892284` | - |
 | Industrial Splitter | `industrial.splitter` | `742745918` | - |
-| Industrial Wall Light | `industrial.wall.light` | `1623701499` | - |
+| Industrial Wall Light | `industrial.wall.light` | `1623701499` | 3 |
 | Blue Industrial Wall Light | `industrial.wall.light.blue` | `920930831` | - |
 | Green Industrial Wall Light | `industrial.wall.light.green` | `1268178466` | - |
 | Red Industrial Wall Light | `industrial.wall.light.red` | `-1160621614` | - |
-| Mini Fridge | `mini fridge` | `1174484438` | - |
+| Mini Fridge | `mini fridge` | `1174484438` | 1 |
 | Modular Car Lift | `modularcarlift` | `1696050067` | - |
 | Twitch Rivals Neon Sign | `neonsigntr` | `381595627` | - |
 | Paintable Reactive Target | `paintabletarget.reactive` | `-1039234836` | - |
@@ -486,7 +486,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Smart Switch | `smart.switch` | `988652725` | - |
 | Storage Monitor | `storage.monitor` | `1149964039` | - |
 | Storage Adaptor | `storageadaptor` | `-1049172752` | - |
-| Reactive Target | `target.reactive` | `-1736356576` | 4 |
+| Reactive Target | `target.reactive` | `-1736356576` | 5 |
 | Twitch Rivals Desk | `twitchrivals2023desk` | `-243540612` | - |
 | Water Pump | `waterpump` | `-1284169891` | - |
 | Weapon Rack Double Light | `weaponrack.doublelight` | `1277159544` | - |
@@ -663,11 +663,11 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Nombre | shortname | itemid | Skins |
 |---|---|---|---|
 | Above Ground Pool | `abovegroundpool` | `1840570710` | - |
-| Beach Chair | `beachchair` | `-321431890` | - |
-| Beach Parasol | `beachparasol` | `-1621539785` | - |
+| Beach Chair | `beachchair` | `-321431890` | 7 |
+| Beach Parasol | `beachparasol` | `-1621539785` | 7 |
 | Beach Table | `beachtable` | `657352755` | - |
-| Beach Towel | `beachtowel` | `-8312704` | - |
-| Boogie Board | `boogieboard` | `-1478094705` | - |
+| Beach Towel | `beachtowel` | `-8312704` | 7 |
+| Boogie Board | `boogieboard` | `-1478094705` | 6 |
 | Boom Box | `boombox` | `-1113501606` | - |
 | Cassette - Long | `cassette` | `476066818` | - |
 | Cassette - Medium | `cassette.medium` | `-912398867` | - |
@@ -676,7 +676,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Connected Speaker | `connected.speaker` | `968421290` | - |
 | Dart Board | `dartboard` | `-872679147` | - |
 | Disco Ball | `discoball` | `1895235349` | - |
-| Disco Floor | `discofloor` | `286648290` | - |
+| Disco Floor | `discofloor` | `286648290` | 1 |
 | Disco Floor | `discofloor.largetiles` | `1735402444` | - |
 | Junkyard Drum Kit | `drumkit` | `-1330640246` | - |
 | Blue Boomer | `firework.boomer.blue` | `1744298439` | - |
@@ -703,7 +703,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Canbourine | `fun.tambourine` | `-1379036069` | - |
 | Plumber's Trumpet | `fun.trumpet` | `273172220` | - |
 | Sousaphone | `fun.tuba` | `1784406797` | - |
-| Inner Tube | `innertube` | `-697981032` | - |
+| Inner Tube | `innertube` | `-697981032` | 7 |
 | Inner Tube | `innertube.horse` | `185586769` | - |
 | Inner Tube | `innertube.unicorn` | `2052270186` | - |
 | Jukebox | `jukebox` | `-1018085504` | - |
@@ -713,23 +713,23 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Microphone Stand | `microphonestand` | `39600618` | - |
 | Mobile Phone | `mobilephone` | `-20045316` | - |
 | New Year Gong | `newyeargong` | `-961457160` | - |
-| Paddling Pool | `paddlingpool` | `-733625651` | - |
+| Paddling Pool | `paddlingpool` | `-733625651` | 4 |
 | Wheelbarrow Piano | `piano` | `1272430949` | - |
 | Pinata | `pinata` | `-1442496789` | - |
 | Pool Table | `pooltable` | `-1748166144` | - |
-| Skull Trophy | `skull.trophy` | `-769647921` | - |
+| Skull Trophy | `skull.trophy` | `-769647921` | 3 |
 | Skull Trophy | `skull.trophy.jar` | `971362526` | - |
 | Skull Trophy | `skull.trophy.jar2` | `-924959988` | - |
 | Skull Trophy | `skull.trophy.table` | `-156748077` | - |
-| Skull Spikes | `skullspikes` | `-1073015016` | - |
+| Skull Spikes | `skullspikes` | `-1073015016` | 2 |
 | Skull Spikes | `skullspikes.candles` | `-25740268` | - |
 | Skull Spikes | `skullspikes.pumpkin` | `-1078639462` | - |
-| Sky Lantern | `skylantern` | `1819863051` | - |
+| Sky Lantern | `skylantern` | `1819863051` | 4 |
 | Sky Lantern - Green | `skylantern.skylantern.green` | `-1770889433` | - |
 | Sky Lantern - Orange | `skylantern.skylantern.orange` | `-1824770114` | - |
 | Sky Lantern - Purple | `skylantern.skylantern.purple` | `831955134` | - |
 | Sky Lantern - Red | `skylantern.skylantern.red` | `-1433390281` | - |
-| Sled | `sled` | `-333406828` | - |
+| Sled | `sled` | `-333406828` | 1 |
 | Sled | `sled.xmas` | `-135252633` | - |
 | Sound Light | `soundlight` | `-343857907` | - |
 | Telephone | `telephone` | `1234878710` | - |
@@ -749,10 +749,10 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Bamboo Barrel | `bamboo.barrel` | `-1652561344` | - |
 | Metal Bar Stool | `bar.stool.metal` | `-1639742441` | - |
 | Wooden Bar Stool | `bar.stool.wood` | `-1444366079` | - |
-| Base half shelves | `base.half.shelves` | `-1024954624` | - |
-| Base horizontal storage barrel | `base.horizontal.barrel` | `655356057` | - |
-| Base single shelves | `base.single.shelves` | `-1695149731` | - |
-| Base vertical storage barrel | `base.vertical.barrel` | `2045583965` | - |
+| Base half shelves | `base.half.shelves` | `-1024954624` | 2 |
+| Base horizontal storage barrel | `base.horizontal.barrel` | `655356057` | 5 |
+| Base single shelves | `base.single.shelves` | `-1695149731` | 2 |
+| Base vertical storage barrel | `base.vertical.barrel` | `2045583965` | 5 |
 | Bath Tub Planter | `bathtub.planter` | `-1274093662` | - |
 | Barbeque | `bbq` | `1099314009` | 12 |
 | Fabric Beanbag Seat | `beanbagseatfabric` | `-576866254` | - |
@@ -761,13 +761,13 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Boat Building Station | `boatbuildingstation` | `1993693904` | - |
 | Bota Bag | `botabag` | `613961768` | - |
 | Repair Bench | `box.repair.bench` | `803222026` | - |
-| Wood Storage Box | `box.wooden` | `-180129657` | 120 |
-| Large Wood Box | `box.wooden.large` | `833533164` | 290 |
+| Wood Storage Box | `box.wooden` | `-180129657` | 121 |
+| Large Wood Box | `box.wooden.large` | `833533164` | 311 |
 | Camp Fire | `campfire` | `1946219319` | - |
 | Cannon | `cannon` | `-34498533` | - |
 | Card Table | `cardtable` | `1081921512` | - |
 | Carvable Pumpkin | `carvable.pumpkin` | `1524980732` | - |
-| Chair | `chair` | `1534542921` | 10 |
+| Chair | `chair` | `1534542921` | 16 |
 | Salvaged Ejector Seat | `chair.ejector.seat` | `-463012608` | - |
 | Ice Throne | `chair.icethrone` | `-1944704288` | - |
 | Cancer Research UK Plushie | `charity.plushy.01` | `2130820932` | - |
@@ -817,8 +817,8 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Frontier Mirror Medium | `frontiermirror.medium` | `2055695285` | - |
 | Frontier Mirror Small | `frontiermirror.small` | `340210699` | - |
 | Frontier Mirror Standing | `frontiermirror.standing` | `1787198294` | - |
-| Furnace | `furnace` | `-1999722522` | 172 |
-| Large Furnace | `furnace.large` | `-1992717673` | - |
+| Furnace | `furnace` | `-1999722522` | 173 |
+| Large Furnace | `furnace.large` | `-1992717673` | 1 |
 | Ornate Frame large | `goldframe.large` | `-996235148` | - |
 | Ornate Frame Medium | `goldframe.medium` | `-1901993050` | - |
 | Ornate Frame Small | `goldframe.small` | `-1836526520` | - |
@@ -883,16 +883,16 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Portrait Photo Frame | `photoframe.portrait` | `1729712564` | - |
 | Flight Recorder Box | `pilot.hazmat.box.wooden` | `537946062` | - |
 | Plank | `plank` | `-952411326` | - |
-| Large Planter Box | `planter.large` | `1581210395` | - |
+| Large Planter Box | `planter.large` | `1581210395` | 1 |
 | Small Planter Box | `planter.small` | `1903654061` | - |
-| Triangle Planter Box | `planter.triangle` | `-280812482` | - |
+| Triangle Planter Box | `planter.triangle` | `-280812482` | 1 |
 | Single Plant Pot | `plantpot.single` | `-430416124` | - |
 | Pookie Bear | `pookie.bear` | `-1651220691` | - |
 | PT Boat | `ptboat` | `1933140008` | - |
 | Rail Road Planter | `rail.road.planter` | `615112838` | - |
 | Research Table | `research.table` | `-1861522751` | - |
 | RHIB | `rhib` | `1394042569` | - |
-| Rocking Chair | `rockingchair` | `-1863063690` | - |
+| Rocking Chair | `rockingchair` | `-1863063690` | 2 |
 | Teal | `rockingchair.rockingchair2` | `1758333838` | - |
 | Green | `rockingchair.rockingchair3` | `192249897` | - |
 | Rowboat | `rowboat` | `1878053256` | - |
@@ -916,7 +916,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Ice Sculpture | `sculpture.ice` | `504109620` | - |
 | Stone Sculpture | `sculpture.rock` | `1852905808` | - |
 | Secretlab Chair | `secretlabchair` | `567871954` | - |
-| Salvaged Shelves | `shelves` | `1950721418` | - |
+| Salvaged Shelves | `shelves` | `1950721418` | 2 |
 | Artist Canvas Standing | `sign.artistcanvas.l` | `-946599114` | - |
 | Artist Canvas Large | `sign.artistcanvas.m` | `-946599113` | - |
 | Artist Canvas Medium | `sign.artistcanvas.s` | `-946599131` | - |
@@ -944,7 +944,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Diver propulsion vehicle | `skidoo` | `-1056824343` | - |
 | Skull Fire Pit | `skull_fire_pit` | `553887414` | - |
 | Skull Door Knocker | `skulldoorknocker` | `-216116642` | - |
-| Sleeping Bag | `sleepingbag` | `-1754948969` | 121 |
+| Sleeping Bag | `sleepingbag` | `-1754948969` | 127 |
 | Small Oil Refinery | `small.oil.refinery` | `-1293296287` | - |
 | Small Ramp | `small_ramp` | `-158718378` | - |
 | Small Boat Engine | `smallengine` | `-2115299615` | - |
@@ -973,9 +973,9 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Snake Venom | `venom.snake` | `-870140677` | - |
 | Walkie Talkie | `walkietalkie` | `-1416322465` | - |
 | Industrial Wall Shelves | `wall.shallow.industrial.shelves` | `-265202949` | - |
-| Wallpaper Ceiling | `wallpaper.ceiling` | `1730664641` | - |
-| Flooring | `wallpaper.flooring` | `-551431036` | - |
-| Wanted Poster | `wantedposter` | `-1344017968` | - |
+| Wallpaper Ceiling | `wallpaper.ceiling` | `1730664641` | 30 |
+| Flooring | `wallpaper.flooring` | `-551431036` | 40 |
+| Wanted Poster | `wantedposter` | `-1344017968` | 3 |
 | Wanted Poster 2 | `wantedposter.wantedposter2` | `301063058` | - |
 | Wanted Poster 3 | `wantedposter.wantedposter3` | `-1265020883` | - |
 | Wanted Poster 4 | `wantedposter.wantedposter4` | `1463862472` | - |
@@ -1073,7 +1073,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Sickle | `sickle` | `-1368584029` | - |
 | Small Candle Set | `smallcandles` | `-2058362263` | - |
 | Snow Machine | `snowmachine` | `1358643074` | - |
-| Snowmobile | `snowmobile` | `-1364246987` | - |
+| Snowmobile | `snowmobile` | `-1364246987` | 1 |
 | Tomaha Snowmobile | `snowmobiletomaha` | `1768112091` | - |
 | Spider Webs | `spiderweb` | `882559853` | - |
 | Spooky Speaker | `spookyspeaker` | `1885488976` | - |
@@ -1159,7 +1159,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Salvaged Axe | `axe.salvaged` | `-262590403` | 12 |
 | Water Bucket | `bucket.water` | `1424075905` | - |
 | Birthday Cake | `cakefiveyear` | `1973165031` | - |
-| Chainsaw | `chainsaw` | `1104520648` | - |
+| Chainsaw | `chainsaw` | `1104520648` | 1 |
 | Compass | `compass` | `594041190` | - |
 | Concrete Hatchet | `concretehatchet` | `1176355476` | - |
 | Concrete Pickaxe | `concretepickaxe` | `-1360171080` | - |
@@ -1179,7 +1179,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Hammer | `hammer` | `200773292` | 48 |
 | Salvaged Hammer | `hammer.salvaged` | `-1506397857` | - |
 | Handcuffs | `handcuffs` | `-839576748` | - |
-| Hatchet | `hatchet` | `-1252059217` | 104 |
+| Hatchet | `hatchet` | `-1252059217` | 107 |
 | Salvaged Icepick | `icepick.salvaged` | `-1780802565` | 14 |
 | Industrial Torch | `industrial.torch` | `4474927` | - |
 | Jackhammer | `jackhammer` | `1488979457` | 25 |
@@ -1189,25 +1189,25 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Prototype Pickaxe | `lumberjack.pickaxe` | `236677901` | - |
 | Metal Detector | `metal.detector` | `1168856825` | - |
 | Outbreak Sprayer | `outbreak.sprayer` | `1621942085` | - |
-| Pickaxe | `pickaxe` | `-1302129395` | 75 |
+| Pickaxe | `pickaxe` | `-1302129395` | 77 |
 | RF Transmitter | `rf.detonator` | `596469572` | - |
-| Rock | `rock` | `963906841` | 87 |
+| Rock | `rock` | `963906841` | 89 |
 | Shovel | `shovel` | `-1536855921` | - |
 | Skull | `skull` | `1312843609` | - |
 | Spray Can | `spraycan` | `-596876839` | - |
-| Spray Can Decal | `spraycandecal` | `-1366326648` | - |
-| Stone Pickaxe | `stone.pickaxe` | `171931394` | 39 |
-| Stone Hatchet | `stonehatchet` | `-1583967946` | 50 |
+| Spray Can Decal | `spraycandecal` | `-1366326648` | 19 |
+| Stone Pickaxe | `stone.pickaxe` | `171931394` | 40 |
+| Stone Hatchet | `stonehatchet` | `-1583967946` | 51 |
 | Supply Signal | `supply.signal` | `1397052267` | - |
 | Survey Charge | `surveycharge` | `1975934948` | - |
 | Binoculars | `tool.binoculars` | `-1262185308` | - |
 | Camera | `tool.camera` | `-1316706473` | - |
 | Instant Camera | `tool.instant_camera` | `-2001260025` | - |
 | Garry's Mod Tool Gun | `toolgun` | `1803831286` | - |
-| Torch | `torch` | `795236088` | - |
+| Torch | `torch` | `795236088` | 3 |
 | Cultist Deer Torch | `torch.torch.skull` | `-1175656359` | - |
 | Wallpaper Tool | `wallpaper.tool` | `1629564540` | - |
-| Wallpaper | `wallpaper.wall` | `553967074` | - |
+| Wallpaper | `wallpaper.wall` | `553967074` | 57 |
 
 ## Traps (9)
 
@@ -1215,7 +1215,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 |---|---|---|---|
 | Flame Turret | `flameturret` | `528668503` | - |
 | Bar Games Shotgun Trap | `gamesroom.shotgun.trap` | `399522257` | - |
-| Shotgun Trap | `guntrap` | `352499047` | - |
+| Shotgun Trap | `guntrap` | `352499047` | 1 |
 | SAM Site | `samsite` | `-1009359066` | - |
 | Wooden Floor Spikes | `spikes.floor` | `-92759291` | - |
 | Small Spike Trap | `spikes.trap` | `-1850297170` | - |
@@ -1239,10 +1239,10 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Bone Club | `bone.club` | `1711033574` | 10 |
 | Boomerang | `boomerang` | `1680793490` | - |
 | Compound Bow | `bow.compound` | `884424049` | - |
-| Hunting Bow | `bow.hunting` | `1443579727` | 90 |
+| Hunting Bow | `bow.hunting` | `1443579727` | 91 |
 | Candy Cane Club | `candycaneclub` | `1789825282` | - |
 | Catapult | `catapult` | `1145722690` | - |
-| Crossbow | `crossbow` | `1965232394` | 87 |
+| Crossbow | `crossbow` | `1965232394` | 88 |
 | Bowless Crossbow | `crossbowbowless` | `2022157467` | - |
 | Flame Thrower | `flamethrower` | `-1215753368` | - |
 | Beancan Grenade | `grenade.beancan` | `1840822026` | - |
@@ -1250,20 +1250,20 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | F1 Grenade | `grenade.f1` | `143803535` | 8 |
 | Flashbang | `grenade.flashbang` | `-936921910` | - |
 | Molotov Cocktail | `grenade.molotov` | `1556365900` | - |
-| Water Gun | `gun.water` | `722955039` | - |
+| Water Gun | `gun.water` | `722955039` | 4 |
 | HMLMG | `hmlmg` | `-1214542497` | 17 |
 | Homing Missile Launcher | `homingmissile.launcher` | `-218009552` | - |
-| Bone Knife | `knife.bone` | `1814288539` | 9 |
+| Bone Knife | `knife.bone` | `1814288539` | 10 |
 | Obsidian Bone Knife | `knife.bone.obsidian` | `158303804` | - |
 | Butcher Knife | `knife.butcher` | `-194509282` | - |
-| Combat Knife | `knife.combat` | `2040726127` | 22 |
+| Combat Knife | `knife.combat` | `2040726127` | 23 |
 | Skinning Knife | `knife.skinning` | `-2073432256` | - |
 | Krieg Shotgun | `krieg.shotgun` | `-420889602` | - |
 | Legacy Bow | `legacy bow` | `-73195037` | - |
 | M249 | `lmg.m249` | `-2069578888` | 31 |
 | Longsword | `longsword` | `-1469578201` | 6 |
 | M16A2 | `m16a2` | `599591861` | - |
-| Mace | `mace` | `-1966748496` | - |
+| Mace | `mace` | `-1966748496` | 1 |
 | Baseball Bat | `mace.baseballbat` | `-2026042603` | - |
 | Machete | `machete` | `-1137865085` | - |
 | Military Flame Thrower | `military flamethrower` | `703057617` | - |
@@ -1278,33 +1278,33 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Prototype 17 | `pistol.prototype17` | `1914691295` | - |
 | Python Revolver | `pistol.python` | `1373971859` | 85 |
 | Revolver | `pistol.revolver` | `649912614` | 55 |
-| Semi-Automatic Pistol | `pistol.semiauto` | `818877484` | 89 |
+| Semi-Automatic Pistol | `pistol.semiauto` | `818877484` | 94 |
 | M15 Semi-Automatic Pistol | `pistol.semiauto.a.m15` | `1673224590` | - |
 | Water Pistol | `pistol.water` | `-1815301988` | - |
 | Pitchfork | `pitchfork` | `1090916276` | - |
 | High Caliber Revolver | `revolver.hc` | `-92315244` | - |
-| Assault Rifle | `rifle.ak` | `1545779598` | 330 |
+| Assault Rifle | `rifle.ak` | `1545779598` | 337 |
 | Abyss Assault Rifle | `rifle.ak.diver` | `-139037392` | - |
 | Ice Assault Rifle | `rifle.ak.ice` | `-1335497659` | - |
 | Jungle Relic Assault Rifle | `rifle.ak.jungle` | `2054929933` | - |
 | Medieval AR | `rifle.ak.med` | `472505338` | - |
-| Bolt Action Rifle | `rifle.bolt` | `1588298435` | 42 |
+| Bolt Action Rifle | `rifle.bolt` | `1588298435` | 45 |
 | L96 Rifle | `rifle.l96` | `-778367295` | 29 |
-| LR-300 Assault Rifle | `rifle.lr300` | `-1812555177` | 102 |
+| LR-300 Assault Rifle | `rifle.lr300` | `-1812555177` | 103 |
 | Space LR-300 Assault Rifle | `rifle.lr300.space` | `533993281` | - |
 | M39 Rifle | `rifle.m39` | `28201841` | 16 |
 | Semi-Automatic Rifle | `rifle.semiauto` | `-904863145` | 181 |
 | SKS | `rifle.sks` | `-348232115` | 16 |
-| Rocket Launcher | `rocket.launcher` | `442886268` | 36 |
+| Rocket Launcher | `rocket.launcher` | `442886268` | 38 |
 | Dragon Rocket Launcher | `rocket.launcher.dragon` | `-1315992997` | - |
 | RPG Launcher | `rocket.launcher.rpg7` | `494161326` | - |
 | Salvaged Cleaver | `salvaged.cleaver` | `-1978999529` | - |
 | Salvaged Sword | `salvaged.sword` | `1326180354` | 42 |
-| Double Barrel Shotgun | `shotgun.double` | `-765183617` | 81 |
+| Double Barrel Shotgun | `shotgun.double` | `-765183617` | 82 |
 | M4 Shotgun | `shotgun.m4` | `678698219` | - |
-| Pump Shotgun | `shotgun.pump` | `795371088` | 41 |
+| Pump Shotgun | `shotgun.pump` | `795371088` | 44 |
 | Spas-12 Shotgun | `shotgun.spas12` | `-41440462` | - |
-| Waterpipe Shotgun | `shotgun.waterpipe` | `-1367281941` | 24 |
+| Waterpipe Shotgun | `shotgun.waterpipe` | `-1367281941` | 25 |
 | Siege Tower | `siegetower` | `-1290278434` | - |
 | Custom SMG | `smg.2` | `1796682209` | 65 |
 | MP5A4 | `smg.mp5` | `1318558775` | 101 |
@@ -1313,7 +1313,7 @@ O usa `/menu` en el chat para el buscador visual. 🖱️
 | Snowball Gun | `snowballgun` | `1103488722` | - |
 | Lunar New Year Spear | `spear.cny` | `695450239` | - |
 | Stone Spear | `spear.stone` | `1602646136` | - |
-| Wooden Spear | `spear.wooden` | `1540934679` | - |
+| Wooden Spear | `spear.wooden` | `1540934679` | 1 |
 | Speargun | `speargun` | `-1517740219` | - |
 | Sunken Combat Knife | `sunken.knife` | `789333045` | - |
 | Handmade SMG | `t1_smg` | `2083256995` | - |

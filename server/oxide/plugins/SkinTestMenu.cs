@@ -96,24 +96,74 @@ namespace Oxide.Plugins
             var exact = new Dictionary<string, string>();
             foreach (var def in ItemManager.itemList) exact[def.shortname] = def.shortname;
 
+            var sinWorkshop = 0;
+
+            // ── Skins del workshop ──────────────────────────────────────
+            // OJO: hay que usar WorkshopdId (3601703973), NO InventoryId (66311).
+            // El cliente descarga el bundle con WorkshopSkin.LoadFromWorkshop(workshopId);
+            // si le pasas el InventoryId se queda cargando para siempre porque ese
+            // item del workshop no existe.
             foreach (var kv in Rust.Workshop.Approved.All)
             {
                 var info = kv.Value;
                 if (info.Skinnable == null) continue;
 
+                if (info.WorkshopdId == 0UL) { sinWorkshop++; continue; }
+
                 var shortname = ResolveShortname(info.Skinnable.ItemName, exact);
                 if (shortname == null) continue;
 
-                List<KeyValuePair<ulong, string>> list;
-                if (!_skinsByItem.TryGetValue(shortname, out list))
-                    _skinsByItem[shortname] = list = new List<KeyValuePair<ulong, string>>();
-
-                var nombre = string.IsNullOrEmpty(info.Name) ? ("Skin " + info.InventoryId) : info.Name;
-                list.Add(new KeyValuePair<ulong, string>(info.InventoryId, nombre));
+                var nombre = string.IsNullOrEmpty(info.Name) ? ("Skin " + info.WorkshopdId) : info.Name;
+                Anadir(shortname, info.WorkshopdId, nombre);
             }
+
+            // ── Skins integradas en el juego (no necesitan descarga) ────
+            // ItemSkinDirectory usa su propio espacio de IDs pequenos (101, 10001...).
+            try
+            {
+                var dir = ItemSkinDirectory.Instance;
+                if (dir != null && dir.skins != null)
+                {
+                    foreach (var sk in dir.skins)
+                    {
+                        if (!sk.isSkin || sk.id <= 0) continue;
+                        var def = ItemManager.FindItemDefinition(sk.itemid);
+                        if (def == null) continue;
+                        Anadir(def.shortname, (ulong)sk.id, NombreSkinIntegrada(sk.name, sk.id));
+                    }
+                }
+            }
+            catch (Exception e) { PrintWarning("ItemSkinDirectory: " + e.Message); }
 
             foreach (var list in _skinsByItem.Values)
                 list.Sort((a, b) => string.Compare(a.Value, b.Value, StringComparison.OrdinalIgnoreCase));
+
+            if (sinWorkshop > 0)
+                Puts(sinWorkshop + " skins aprobadas sin workshop id (no se pueden mostrar), omitidas.");
+        }
+
+        void Anadir(string shortname, ulong skinId, string nombre)
+        {
+            List<KeyValuePair<ulong, string>> list;
+            if (!_skinsByItem.TryGetValue(shortname, out list))
+                _skinsByItem[shortname] = list = new List<KeyValuePair<ulong, string>>();
+
+            for (var i = 0; i < list.Count; i++)
+                if (list[i].Key == skinId) return;   // ya esta
+
+            list.Add(new KeyValuePair<ulong, string>(skinId, nombre));
+        }
+
+        // "assets/prefabs/clothes/tshirt/red/tshirt.red.itemskin.asset" -> "Tshirt Red"
+        static string NombreSkinIntegrada(string ruta, int id)
+        {
+            if (string.IsNullOrEmpty(ruta)) return "Skin " + id;
+            var n = ruta;
+            var barra = n.LastIndexOf('/');
+            if (barra >= 0) n = n.Substring(barra + 1);
+            n = n.Replace(".itemskin.asset", "").Replace(".sitem.asset", "").Replace('.', ' ');
+            if (n.Length == 0) return "Skin " + id;
+            return char.ToUpper(n[0]) + n.Substring(1);
         }
 
         // "smg.thompson" casa directo; "lr300.item" hay que resolverlo

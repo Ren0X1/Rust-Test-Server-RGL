@@ -83,5 +83,5 @@ jobs:
             - Modo creativo nativo activado para todo el servidor
             - `/menu` — spawner de items por categorias con iconos
             - `/sk` — skins del item que lleves en la mano
-            - `docs/SKINS.md` — las 5800 skins con sus IDs
+            - `docs/SKINS.md` — las 6266 skins con sus IDs
             - `docs/ITEMS.md` — los 1252 items con shortname e itemid
