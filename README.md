@@ -77,9 +77,14 @@ teleportpos x y z   # 📍 Teletransporte
 
 ## ⚙️ Cómo está configurado
 
-- 🗺️ **Mapa**: procedural, `worldsize 1000` (el mínimo que permite Rust) con `seed 1337`.
-  Los mapas pequeños clásicos (*Craggy Island*, *Barren*) **ya no vienen** en las builds actuales,
-  así que 1000 es lo más rápido posible.
+- 🗺️ **Mapa**: procedural, `worldsize 1500` con `seed 1337`.
+  Los mapas pequeños clásicos (*Craggy Island*, *Barren*) **ya no vienen** en las builds actuales.
+  ⚠️ **No bajes de 1500**: a 1000 (el mínimo que acepta Rust) el mapa sale casi todo océano
+  — solo un 8,6% de tierra — y no genera ni un punto de spawn válido, así que apareces
+  bajo el agua en (0,-15,0) y el antihack te expulsa. A 1500 hay un 18,3% de tierra
+  y los spawns funcionan.
+- 🛡️ **Antihack desactivado** (`antihack.enforcementlevel 0`, `terrain_protection 0`):
+  sin esto el `noclip` y volar te sacan del servidor por *InsideTerrain*.
 - 🏗️ **Modo creativo nativo para todo el servidor** (`creative.allusers`): construir gratis,
   colocar sin restricciones y sin coste de recursos.
 - ☀️ **Siempre mediodía** para ver bien las skins (`env.time 12`, sin paso del tiempo).
