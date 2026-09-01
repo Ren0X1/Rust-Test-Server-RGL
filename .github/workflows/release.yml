@@ -2,17 +2,21 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version de la release (ej: v1.0.0)'
-        required: true
+        description: 'Version de la release (ej: v1.0.0). Vacio = subir el patch solo.'
+        required: false
         type: string
 
 permissions:
   contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -22,15 +26,43 @@ jobs:
     steps:
       - name: Descargar el repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Determinar la version
         id: ver
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "tag=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          set -e
+          git fetch --tags --force --quiet
+
+          PEDIDA="${{ inputs.version }}"
+          if [ -n "$PEDIDA" ]; then
+            TAG="$PEDIDA"
+            case "$TAG" in v*) ;; *) TAG="v$TAG" ;; esac
           else
-            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+            ULTIMO=$(git tag -l 'v[0-9]*' --sort=-v:refname | head -n1)
+            if [ -z "$ULTIMO" ]; then
+              TAG="v1.0.0"
+            else
+              NUM="${ULTIMO#v}"
+              MAJOR="${NUM%%.*}"
+              RESTO="${NUM#*.}"
+              MINOR="${RESTO%%.*}"
+              PATCH="${RESTO#*.}"
+              PATCH="${PATCH%%[!0-9]*}"
+              [ -n "$PATCH" ] || PATCH=0
+              TAG="v$MAJOR.$MINOR.$((PATCH + 1))"
+              # Si ese tag ya existe (re-run, tag borrado a medias...), seguir subiendo
+              while git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; do
+                PATCH=$((PATCH + 1))
+                TAG="v$MAJOR.$MINOR.$((PATCH + 1))"
+              done
+            fi
           fi
+
+          echo "Version de esta release: $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Comprobar que los plugins estan
         run: |
@@ -42,6 +74,19 @@ jobs:
           test -f start.bat || { echo "::error::Falta start.bat"; exit 1; }
           echo "Todo en su sitio."
 
+      - name: Crear el tag
+        run: |
+          set -e
+          TAG="${{ steps.ver.outputs.tag }}"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "El tag $TAG ya existe, lo reutilizo."
+          else
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "refs/tags/$TAG"
+          fi
+
       - name: Preparar el paquete
         id: pack
         run: |
@@ -50,7 +95,7 @@ jobs:
           mkdir -p "dist/$NAME"
           cp -r \
             start.bat instalar.bat actualizar_servidor.bat actualizar_oxide.bat \
-            README.md .gitignore comandos_rust_referencia.txt docs server \
+            README.md comandos_rust_referencia.txt docs server \
             "dist/$NAME/"
           cd dist && zip -qr "../$NAME.zip" "$NAME"
           echo "zip=$NAME.zip" >> "$GITHUB_OUTPUT"
