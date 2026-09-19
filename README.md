@@ -1,6 +1,6 @@
 # 🎨 Rust Test Server RGL
 
-> Servidor dedicado de **Rust** en local, en **modo creativo**, con un mapa de tamaño normal (3700).
+> Servidor dedicado de **Rust** en local, en **modo creativo**, con un mapa de tamaño normal (4000).
 > Pensado para una sola cosa: **probar skins** sin farmear nada. 🧪
 
 ---
@@ -14,7 +14,7 @@
 | 🎮 **3. Conectar** | En Rust pulsa **F1** y escribe: `client.connect localhost:28015` |
 
 > 🖥️ `start.bat` abre también el **panel web** en `http://127.0.0.1:28080` (ver abajo).
-> ⏱️ El primer arranque tarda **varios minutos** porque genera el mapa (3700 es un mapa grande).
+> ⏱️ El primer arranque tarda **varios minutos** porque genera el mapa (4000 es un mapa grande).
 > Los siguientes son mucho más rápidos porque cargan el save.
 > ❌ Para cerrarlo: cierra la ventana de `start.bat`.
 
@@ -125,10 +125,9 @@ teleportpos x y z   # 📍 Teletransporte
 
 ## ⚙️ Cómo está configurado
 
-- 🗺️ **Mapa**: procedural de tamaño normal, `worldsize 3700` con `seed 2026`
-  ([ver en RustMaps](https://rustmaps.com/map/3700_2026)): una isla grande y compacta con
-  nieve, desierto, bosque, dos ríos y todos los monumentos grandes (Launch Site, Outpost,
-  Bandit Camp, Oil Rigs, Cargo, Harbor, Excavadora...).
+- 🗺️ **Mapa**: procedural de tamaño normal, `worldsize 4000` con `seed 1219563660`, con
+  todos los monumentos grandes (Launch Site, Outpost, Bandit Camp, Oil Rigs, Cargo, Harbor,
+  Excavadora...). Se cambia desde la sección **Mapa** del panel web, con vista previa.
   ⚠️ Si buscas otro mapa en RustMaps, fíjate en que la URL sea del tipo `/map/<tamaño>_<seed>`.
   Los que tienen una URL con un hash (`/map/97d3ed70...`) son **mapas custom** hechos con el
   generador de RustMaps: aunque pongas su seed y tamaño, el servidor genera otro mapa distinto.
@@ -142,7 +141,8 @@ teleportpos x y z   # 📍 Teletransporte
 - 🏗️ **Modo creativo nativo para todo el servidor** (`creative.allusers`): construir gratis,
   colocar sin restricciones y sin coste de recursos.
 - ☀️ **Siempre mediodía** para ver bien las skins (`env.time 12`, sin paso del tiempo).
-- 🕊️ Sin decay, sin radiación, sin colapso de estructuras, PvE, sin NPCs ni eventos.
+- 🕊️ Sin decay, sin radiación, sin colapso de estructuras, sin NPCs ni eventos.
+  ⚔️ **PvP activado** (`server.pve false`): los jugadores se pueden hacer daño entre ellos.
 - ✖️3️⃣ **Servidor x3** (plugin ServerRates): recolección (árboles, piedras, animales, plantas,
   lo que se recoge del suelo, canteras, excavadora) y loot de barriles y cajas multiplicados
   por 3. Al **romper un barril** el loot va directo a tu inventario, no cae al suelo.
@@ -163,7 +163,7 @@ teleportpos x y z   # 📍 Teletransporte
 
 > ℹ️ Si cambias el **seed** o el **worldsize** en `start.bat`, se genera un mapa nuevo solo:
 > el save se llama `proceduralmap.<tamaño>.<seed>.*.sav`, así que el viejo simplemente deja de usarse.
-> Para ver un seed antes de usarlo: `https://rustmaps.com/map/3700_<seed>` (si alguien lo ha generado ya).
+> Para ver un seed antes de usarlo: `https://rustmaps.com/map/<tamaño>_<seed>` (si alguien lo ha generado ya).
 > Puedes borrar los `proceduralmap.*` viejos de `server\server\skintest\` para liberar espacio,
 > pero **no borres la carpeta entera**: dentro está `cfg\` con `server.cfg` y `users.cfg`.
 

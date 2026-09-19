@@ -41,8 +41,8 @@ echo.
   +server.identity "skintest" ^
   +server.port 28015 ^
   +server.level "Procedural Map" ^
-  +server.seed 2026 ^
-  +server.worldsize 3700 ^
+  +server.seed 1219563660 ^
+  +server.worldsize 4000 ^
   +server.hostname "Skin Test Local" ^
   +server.maxplayers 8 ^
   +rcon.port 28016 ^
