@@ -13,9 +13,32 @@
 | ▶️ **2. Arrancar** | Doble clic en **`start.bat`** y espera a `Server startup complete` |
 | 🎮 **3. Conectar** | En Rust pulsa **F1** y escribe: `client.connect localhost:28015` |
 
+> 🖥️ `start.bat` abre también el **panel web** en `http://127.0.0.1:28080` (ver abajo).
 > ⏱️ El primer arranque tarda **varios minutos** porque genera el mapa (3700 es un mapa grande).
 > Los siguientes son mucho más rápidos porque cargan el save.
 > ❌ Para cerrarlo: cierra la ventana de `start.bat`.
+
+---
+
+## 🖥️ Panel web · RGL Control
+
+Panel de control del servidor en el navegador, estilo retro lo-fi. **Se abre solo con
+`start.bat`** (o a mano con `panel.bat`) en **http://127.0.0.1:28080**.
+
+| Sección | Qué hace |
+|---|---|
+| **Panel** | Estado, jugadores, FPS, entidades y memoria, con **gráficas en directo** (FPS, jugadores, entidades, memoria y red; 5 min / 15 min / 1 h, con tabla). Botones de encender, guardar, reiniciar y apagar. |
+| **Mapa** | Seed y tamaño con **vista previa de RustMaps** (tierra, islas, ríos, monumentos) y render del mapa real del servidor. Lista de mapas guardados. |
+| **Servidor** | Argumentos de `start.bat` y `server.cfg` por secciones, con interruptores. **Guardar y aplicar en vivo** manda las convars cambiadas por RCON sin reiniciar. |
+| **Permisos** | Grupos de Oxide con todos los permisos como interruptores, permisos por SteamID y los admins/moderadores de `users.cfg`. |
+| **Plugins** | Cargar, recargar y descargar plugins, y editor de sus configs (formulario o JSON) con **guardar y recargar**. |
+| **Jugadores** | Conectados, con dar item, expulsar y banear. |
+| **Consola** | Consola RCON **en directo** con filtros, búsqueda, historial (↑ ↓) y comandos rápidos. |
+
+- Solo necesita **Node.js** (sin `npm install`). Si no está, `start.bat` arranca el servidor igual.
+- Solo escucha en `127.0.0.1`: no se puede abrir desde otro PC. Cada vez que arranca genera
+  un token nuevo, así que ninguna otra web abierta en el navegador puede mandarle comandos.
+- **Apagar** desde el panel apaga de verdad (`start.bat` no lo reinicia); **Reiniciar** sí.
 
 ---
 
@@ -131,7 +154,8 @@ teleportpos x y z   # 📍 Teletransporte
 
 | Ruta | Para qué |
 |---|---|
-| `start.bat` | 🔌 Puerto, seed, tamaño del mapa, nombre del servidor. |
+| `start.bat` | 🔌 Puerto, seed, tamaño del mapa, nombre del servidor *(o desde el panel web)*. |
+| `panel\` | 🖥️ Panel web: `server.js` (backend) y `public\` (interfaz). |
 | `server\server\skintest\cfg\server.cfg` | 🌍 Ajustes del mundo (se ejecuta al arrancar). |
 | `server\server\skintest\cfg\users.cfg` | 👑 Quién es admin *(lleva un SteamID64, cámbialo por el tuyo si clonas el repo)*. |
 | `server\oxide\plugins\` | 🧩 Plugins. Suelta un `.cs` aquí y se carga solo, **sin reiniciar**. |

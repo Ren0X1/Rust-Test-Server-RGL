@@ -11,6 +11,23 @@ if not exist "%~dp0server\RustDedicated.exe" (
   exit /b 1
 )
 
+REM ── Panel web (RGL Control): se abre junto con el servidor ──────────────
+REM Si el propio panel ha lanzado este .bat (boton Encender) no se repite.
+if defined RGL_FROM_PANEL goto start
+del "%~dp0panel\stop.flag" 2>nul
+where node >nul 2>nul || goto sin_node
+netstat -ano | findstr /r /c:"127\.0\.0\.1:28080 .*LISTENING" >nul && goto panel_abierto
+start "RGL Control" /min node "%~dp0panel\server.js"
+goto start
+
+:panel_abierto
+start "" http://127.0.0.1:28080
+goto start
+
+:sin_node
+echo [panel] No se encuentra Node.js: el panel web no se abre. Instalalo desde https://nodejs.org
+goto start
+
 :start
 echo.
 echo ==========================================
@@ -31,6 +48,14 @@ echo.
   +rcon.port 28016 ^
   +rcon.password "skintest" ^
   +rcon.web 1
+
+REM Apagado desde el panel: no se reinicia
+if exist "%~dp0panel\stop.flag" (
+  del "%~dp0panel\stop.flag"
+  echo.
+  echo Servidor apagado desde el panel.
+  exit
+)
 
 echo.
 echo El servidor se ha cerrado. Reiniciando en 10 segundos... (Ctrl+C para salir)
