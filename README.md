@@ -102,10 +102,13 @@ teleportpos x y z   # 📍 Teletransporte
 
 ## ⚙️ Cómo está configurado
 
-- 🗺️ **Mapa**: procedural de tamaño normal, `worldsize 3700` con `seed 1466068073`
-  ([ver en RustMaps](https://rustmaps.com/map/97d3ed7050e64b1392e72b5510ceac28)):
-  nieve, desierto, río y todos los monumentos grandes (Launch Site, Outpost, Bandit Camp,
-  Oil Rigs, Cargo, Harbor...).
+- 🗺️ **Mapa**: procedural de tamaño normal, `worldsize 3700` con `seed 2026`
+  ([ver en RustMaps](https://rustmaps.com/map/3700_2026)): una isla grande y compacta con
+  nieve, desierto, bosque, dos ríos y todos los monumentos grandes (Launch Site, Outpost,
+  Bandit Camp, Oil Rigs, Cargo, Harbor, Excavadora...).
+  ⚠️ Si buscas otro mapa en RustMaps, fíjate en que la URL sea del tipo `/map/<tamaño>_<seed>`.
+  Los que tienen una URL con un hash (`/map/97d3ed70...`) son **mapas custom** hechos con el
+  generador de RustMaps: aunque pongas su seed y tamaño, el servidor genera otro mapa distinto.
   Los mapas pequeños clásicos (*Craggy Island*, *Barren*) **ya no vienen** en las builds actuales.
   ⚠️ Si lo vuelves a achicar, **no bajes de 1500**: a 1000 (el mínimo que acepta Rust) el mapa sale casi todo océano
   — solo un 8,6% de tierra — y no genera ni un punto de spawn válido, así que apareces
@@ -121,7 +124,7 @@ teleportpos x y z   # 📍 Teletransporte
   lo que se recoge del suelo, canteras, excavadora) y loot de barriles y cajas multiplicados
   por 3. Al **romper un barril** el loot va directo a tu inventario, no cae al suelo.
   **Stacks**: los recursos base (madera, piedra, metal, HQM, azufre, pólvora, chatarra, tela,
-  cuero, carbón, combustible...) apilan **60 000**; todo lo demás que se apila, **x3**
+  cuero, carbón, combustible...) apilan **100 000**; todo lo demás que se apila, **x5**
   (armas y ropa siguen a 1). Todo se cambia en `server\oxide\config\ServerRates.json`.
 
 ### 📁 Ficheros que puedes tocar
@@ -136,6 +139,7 @@ teleportpos x y z   # 📍 Teletransporte
 
 > ℹ️ Si cambias el **seed** o el **worldsize** en `start.bat`, se genera un mapa nuevo solo:
 > el save se llama `proceduralmap.<tamaño>.<seed>.*.sav`, así que el viejo simplemente deja de usarse.
+> Para ver un seed antes de usarlo: `https://rustmaps.com/map/3700_<seed>` (si alguien lo ha generado ya).
 > Puedes borrar los `proceduralmap.*` viejos de `server\server\skintest\` para liberar espacio,
 > pero **no borres la carpeta entera**: dentro está `cfg\` con `server.cfg` y `users.cfg`.
 
@@ -152,7 +156,7 @@ teleportpos x y z   # 📍 Teletransporte
 | **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, el exportador de Markdown, y alimenta con skins al plugin Skins vía `OnSkinsFetch` |
 | **CreativeSetup** | ⭐ *Propio.* Desbloquea blueprints al entrar, fija el mediodía y concede los permisos. |
 | **CreativeTools** | ⭐ *Propio.* `/attackheli`, `/scrap` y el crafteo gratis e instantáneo (`/crafteo`). |
-| **ServerRates** | ⭐ *Propio.* Rates x3, stacks (60K recursos / x3 el resto) y el loot de los barriles directo al inventario. |
+| **ServerRates** | ⭐ *Propio.* Rates x3, stacks (100K recursos / x5 el resto) y el loot de los barriles directo al inventario. |
 
 ---
 

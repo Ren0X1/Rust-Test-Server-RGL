@@ -19,8 +19,8 @@ namespace Oxide.Plugins
 
             // Stacks: los recursos base van a StackRecursos, el resto de lo
             // que ya se apila se multiplica (armas, ropa... siguen a 1)
-            public int StackRecursos = 60000;
-            public float MultiplicadorStacks = 3f;
+            public int StackRecursos = 100000;
+            public float MultiplicadorStacks = 5f;
 
             // Replace: sin esto Newtonsoft anade la lista del JSON a la de por
             // defecto y se duplicaria en cada recarga
