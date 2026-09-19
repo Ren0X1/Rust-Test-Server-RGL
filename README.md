@@ -1,6 +1,6 @@
 # 🎨 Rust Test Server RGL
 
-> Servidor dedicado de **Rust** en local, en **modo creativo**, con mapa mínimo para que cargue rápido.
+> Servidor dedicado de **Rust** en local, en **modo creativo**, con un mapa de tamaño normal (3700).
 > Pensado para una sola cosa: **probar skins** sin farmear nada. 🧪
 
 ---
@@ -13,7 +13,8 @@
 | ▶️ **2. Arrancar** | Doble clic en **`start.bat`** y espera a `Server startup complete` |
 | 🎮 **3. Conectar** | En Rust pulsa **F1** y escribe: `client.connect localhost:28015` |
 
-> ⏱️ El primer arranque tarda **~60-90 s** porque genera el mapa. Los siguientes son más rápidos.
+> ⏱️ El primer arranque tarda **varios minutos** porque genera el mapa (3700 es un mapa grande).
+> Los siguientes son mucho más rápidos porque cargan el save.
 > ❌ Para cerrarlo: cierra la ventana de `start.bat`.
 
 ---
@@ -28,7 +29,19 @@ Dos menus propios, sin salir del juego:
 | `/sk` · `/skinmenu` | 🎨 **Skins del item que llevas en la mano.** Cada skin se previsualiza con su icono real, con buscador por nombre o ID y botón para quitarla. Clic y se aplica al instante. |
 
 En el spawner, la pestaña **CON SKINS** filtra solo los items que tienen skins,
-y cada celda te dice cuántas tiene. 🟢
+y cada celda te dice cuántas tiene. 🟢 Arriba tienes el botón **LIMPIAR INVENTARIO**,
+que te lo borra todo (inventario, cinturón y ropa).
+
+---
+
+## 🧰 Comandos de creativo
+
+| Comando | Qué hace |
+|---|---|
+| `/attackheli` · `/heli` | 🚁 Te pone un **attack heli** delante, con el depósito de combustible lleno. |
+| `/scrap <cantidad>` | 🔩 Te da esa cantidad de chatarra. Ej: `/scrap 5000` *(máx. 100 000 de golpe)*. |
+| `/limpiar` | 🗑️ Borra todo tu inventario (lo mismo que el botón del `/menu`). |
+| `/crafteo` | ⚡ Activa o desactiva el **crafteo gratis e instantáneo** *(de fábrica viene activado)*. |
 
 ---
 
@@ -60,7 +73,10 @@ Eres **owner** (auth level 2), así que lo tienes todo abierto:
 - ⌨️ `inventory.give <item> <cantidad>` → por ejemplo `inventory.give wood 10000`
 - 👥 `inventory.giveto <item> <jugador> <cantidad> <skin>`
 - 🔓 **Todos los blueprints se desbloquean solos al entrar.** Si hiciera falta: `/unlockall`
-- ⚡ **Craft instantáneo** (`craft.instant`) y el modo creativo quita el coste de recursos al construir.
+- ⚡ **Crafteo gratis e instantáneo** (plugin CreativeTools, se quita con `/crafteo`): no gasta
+  materiales y el item sale al momento, sin cola. *(El `craft.instant` nativo no vale: solo
+  funciona para admins y aun así tarda 1 s por unidad.)* El modo creativo, además, quita el
+  coste de recursos al construir.
 
 ### 🧰 Otros comandos útiles
 
@@ -77,9 +93,12 @@ teleportpos x y z   # 📍 Teletransporte
 
 ## ⚙️ Cómo está configurado
 
-- 🗺️ **Mapa**: procedural, `worldsize 1500` con `seed 1337`.
+- 🗺️ **Mapa**: procedural de tamaño normal, `worldsize 3700` con `seed 1466068073`
+  ([ver en RustMaps](https://rustmaps.com/map/97d3ed7050e64b1392e72b5510ceac28)):
+  nieve, desierto, río y todos los monumentos grandes (Launch Site, Outpost, Bandit Camp,
+  Oil Rigs, Cargo, Harbor...).
   Los mapas pequeños clásicos (*Craggy Island*, *Barren*) **ya no vienen** en las builds actuales.
-  ⚠️ **No bajes de 1500**: a 1000 (el mínimo que acepta Rust) el mapa sale casi todo océano
+  ⚠️ Si lo vuelves a achicar, **no bajes de 1500**: a 1000 (el mínimo que acepta Rust) el mapa sale casi todo océano
   — solo un 8,6% de tierra — y no genera ni un punto de spawn válido, así que apareces
   bajo el agua en (0,-15,0) y el antihack te expulsa. A 1500 hay un 18,3% de tierra
   y los spawns funcionan.
@@ -89,6 +108,10 @@ teleportpos x y z   # 📍 Teletransporte
   colocar sin restricciones y sin coste de recursos.
 - ☀️ **Siempre mediodía** para ver bien las skins (`env.time 12`, sin paso del tiempo).
 - 🕊️ Sin decay, sin radiación, sin colapso de estructuras, PvE, sin NPCs ni eventos.
+- ✖️3️⃣ **Servidor x3** (plugin ServerRates): recolección (árboles, piedras, animales, plantas,
+  lo que se recoge del suelo, canteras, excavadora) y loot de barriles y cajas multiplicados
+  por 3. Al **romper un barril** el loot va directo a tu inventario, no cae al suelo.
+  El multiplicador se cambia en `server\oxide\config\ServerRates.json`.
 
 ### 📁 Ficheros que puedes tocar
 
@@ -100,8 +123,10 @@ teleportpos x y z   # 📍 Teletransporte
 | `server\oxide\plugins\` | 🧩 Plugins. Suelta un `.cs` aquí y se carga solo, **sin reiniciar**. |
 | `server\oxide\config\` | 🔧 Configuración de cada plugin (se genera sola). |
 
-> ⚠️ Si cambias el **seed** o el **worldsize** en `start.bat`, borra la carpeta
-> `server\server\skintest\` para que no intente cargar el save del mapa viejo.
+> ℹ️ Si cambias el **seed** o el **worldsize** en `start.bat`, se genera un mapa nuevo solo:
+> el save se llama `proceduralmap.<tamaño>.<seed>.*.sav`, así que el viejo simplemente deja de usarse.
+> Puedes borrar los `proceduralmap.*` viejos de `server\server\skintest\` para liberar espacio,
+> pero **no borres la carpeta entera**: dentro está `cfg\` con `server.cfg` y `users.cfg`.
 
 ### 🧩 Plugins instalados
 
@@ -115,6 +140,8 @@ teleportpos x y z   # 📍 Teletransporte
 | **Vanish** | 👻 `/vanish` |
 | **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, el exportador de Markdown, y alimenta con skins al plugin Skins vía `OnSkinsFetch` |
 | **CreativeSetup** | ⭐ *Propio.* Desbloquea blueprints al entrar, fija el mediodía y concede los permisos. |
+| **CreativeTools** | ⭐ *Propio.* `/attackheli`, `/scrap` y el crafteo gratis e instantáneo (`/crafteo`). |
+| **ServerRates** | ⭐ *Propio.* Rates x3 y el loot de los barriles directo al inventario. |
 
 ---
 

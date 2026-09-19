@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("SkinTestMenu", "local", "1.0.0")]
+    [Info("SkinTestMenu", "local", "1.1.0")]
     [Description("Menu de spawn de items por categorias y menu de skins del item en la mano")]
     public class SkinTestMenu : RustPlugin
     {
@@ -308,6 +308,13 @@ namespace Oxide.Plugins
                 Text = { Text = items.Count + " items  -  pagina " + (s.Page + 1) + "/" + (maxPage + 1),
                          FontSize = 12, Align = TextAnchor.MiddleRight, Color = ColDim },
                 RectTransform = { AnchorMin = "0.55 0.985", AnchorMax = "0.86 1.03" }
+            }, UiRoot);
+
+            c.Add(new CuiButton
+            {
+                Button = { Color = ColClose, Command = "stm.clearinv" },
+                Text = { Text = "LIMPIAR INVENTARIO", FontSize = 11, Align = TextAnchor.MiddleCenter, Color = ColText },
+                RectTransform = { AnchorMin = "0.33 0.982", AnchorMax = "0.50 1.032" }
             }, UiRoot);
 
             c.Add(new CuiButton
@@ -794,6 +801,23 @@ namespace Oxide.Plugins
             p.GiveItem(item, BaseEntity.GiveItemReason.PickedUp);
             p.ChatMessage("<color=#8cf>+</color> " + NombreDe(def) + " x" + cantidad);
         }
+
+        // Borra todo: inventario, cinturon y ropa
+        void LimpiarInventario(BasePlayer p)
+        {
+            p.inventory.Strip();
+            p.ChatMessage("<color=#8cf>[Creativo]</color> Inventario limpio.");
+        }
+
+        [ConsoleCommand("stm.clearinv")]
+        void CcClearInv(ConsoleSystem.Arg arg)
+        {
+            var p = arg.Player(); if (p == null) return;
+            LimpiarInventario(p);
+        }
+
+        [ChatCommand("limpiar")]
+        void CmdLimpiar(BasePlayer player, string cmd, string[] args) => LimpiarInventario(player);
 
         [ConsoleCommand("stm.skpage")]
         void CcSkPage(ConsoleSystem.Arg arg)
