@@ -115,14 +115,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 .brand { display: flex; align-items: center; gap: 12px; padding: 2px 6px 14px; border-bottom: 1px dashed var(--line); }
-.brand-tape { width: 46px; flex: none; }
-.tape-body { fill: var(--panel-2); stroke: var(--accent); stroke-width: 2; }
-.tape-window { fill: var(--inset); stroke: var(--line); }
-.tape-reel { fill: none; stroke: var(--text); stroke-width: 2; stroke-dasharray: 5 2.2; transform-box: fill-box; transform-origin: center; }
-.tape-foot { fill: none; stroke: var(--line); stroke-width: 1.5; }
-.app.online .tape-reel { animation: reel 2.8s linear infinite; }
-@keyframes reel { to { transform: rotate(360deg); } }
-
 .brand-name { font: 26px/1 var(--font-crt); letter-spacing: .06em; color: var(--text); }
 .brand-name span { color: var(--accent); margin: 0 2px; }
 .brand-sub { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
