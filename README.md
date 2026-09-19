@@ -28,9 +28,18 @@ Dos menus propios, sin salir del juego:
 | `/menu` · `/items` | 📦 **Spawner de items.** Los **1252 items** con su icono, ordenados por categoría, con buscador y selector de cantidad (x1 / x10 / x100 / x1000 / stack completo). Clic en un item y te lo da. |
 | `/sk` · `/skinmenu` | 🎨 **Skins del item que llevas en la mano.** Cada skin se previsualiza con su icono real, con buscador por nombre o ID y botón para quitarla. Clic y se aplica al instante. |
 
-En el spawner, la pestaña **CON SKINS** filtra solo los items que tienen skins,
-y cada celda te dice cuántas tiene. 🟢 Arriba tienes el botón **LIMPIAR INVENTARIO**,
-que te lo borra todo (inventario, cinturón y ropa).
+En el spawner:
+
+- 🎨 **ELEGIR SKIN** en cada item que tenga skins: abre el selector y te da el item **ya con
+  la skin puesta**, sin tener que sacarlo y usar `/sk`.
+- 🕘 Pestaña **RECIENTES** con lo último que has sacado, y **CON SKINS** para ver solo los
+  items que tienen skins. Las categorías van en español y con su número de items.
+- 🔢 Cantidad x1 / x10 / x100 / x1000 / STACK o **la que escribas**. Los items que no se
+  apilan salen de uno en uno (x10 rifles = 10 rifles), hasta 30 stacks por clic.
+- 🔎 El buscador ordena por relevancia y acepta nombre, shortname o itemid.
+- 🗑️ **LIMPIAR INVENTARIO** te lo borra todo (inventario, cinturón y ropa). Pide un
+  segundo clic de confirmación para que no se pulse sin querer.
+- Clic fuera del panel para cerrarlo.
 
 ---
 
@@ -111,7 +120,9 @@ teleportpos x y z   # 📍 Teletransporte
 - ✖️3️⃣ **Servidor x3** (plugin ServerRates): recolección (árboles, piedras, animales, plantas,
   lo que se recoge del suelo, canteras, excavadora) y loot de barriles y cajas multiplicados
   por 3. Al **romper un barril** el loot va directo a tu inventario, no cae al suelo.
-  El multiplicador se cambia en `server\oxide\config\ServerRates.json`.
+  **Stacks**: los recursos base (madera, piedra, metal, HQM, azufre, pólvora, chatarra, tela,
+  cuero, carbón, combustible...) apilan **60 000**; todo lo demás que se apila, **x3**
+  (armas y ropa siguen a 1). Todo se cambia en `server\oxide\config\ServerRates.json`.
 
 ### 📁 Ficheros que puedes tocar
 
@@ -141,7 +152,7 @@ teleportpos x y z   # 📍 Teletransporte
 | **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, el exportador de Markdown, y alimenta con skins al plugin Skins vía `OnSkinsFetch` |
 | **CreativeSetup** | ⭐ *Propio.* Desbloquea blueprints al entrar, fija el mediodía y concede los permisos. |
 | **CreativeTools** | ⭐ *Propio.* `/attackheli`, `/scrap` y el crafteo gratis e instantáneo (`/crafteo`). |
-| **ServerRates** | ⭐ *Propio.* Rates x3 y el loot de los barriles directo al inventario. |
+| **ServerRates** | ⭐ *Propio.* Rates x3, stacks (60K recursos / x3 el resto) y el loot de los barriles directo al inventario. |
 
 ---
 

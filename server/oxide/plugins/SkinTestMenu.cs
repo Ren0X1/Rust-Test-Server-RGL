@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("SkinTestMenu", "local", "1.1.0")]
+    [Info("SkinTestMenu", "local", "2.0.0")]
     [Description("Menu de spawn de items por categorias y menu de skins del item en la mano")]
     public class SkinTestMenu : RustPlugin
     {
@@ -17,22 +18,48 @@ namespace Oxide.Plugins
         //  Constantes de UI
         // ─────────────────────────────────────────────────────────────
         const string UiRoot = "stm.root";
+        const string UiMain = "stm.main";
         const string UiGrid = "stm.grid";
         const string UiSkinRoot = "stm.skinroot";
+        const string UiSkinMain = "stm.skinmain";
         const string UiSkinGrid = "stm.skingrid";
 
         const int Cols = 7;
         const int Rows = 4;
         const int PerPage = Cols * Rows;   // 28
 
-        const string ColBack = "0.13 0.13 0.15 0.98";
-        const string ColPanel = "0.18 0.18 0.21 0.95";
-        const string ColCell = "0.22 0.22 0.26 0.90";
-        const string ColBtn = "0.30 0.42 0.55 0.95";
-        const string ColBtnOn = "0.35 0.62 0.42 1.00";
-        const string ColClose = "0.65 0.25 0.25 0.95";
-        const string ColText = "0.90 0.90 0.92 1.00";
-        const string ColDim = "0.60 0.60 0.65 1.00";
+        // Un clic nunca crea mas de 30 stacks (lo que cabe en el inventario):
+        // "rifle x1000" serian 1000 entidades tiradas en el suelo.
+        const int MaxStacksPorClic = 30;
+        const int MaxCantidad = 1000000;
+        const float SegundosConfirmar = 4f;
+
+        const string ColBackdrop = "0 0 0 0.55";
+        const string ColBack = "0.11 0.115 0.13 0.98";
+        const string ColHeader = "0.075 0.08 0.095 1";
+        const string ColAccent = "0.85 0.45 0.18 1";
+        const string ColPanel = "0.15 0.155 0.18 0.95";
+        const string ColCell = "0.20 0.205 0.235 0.92";
+        const string ColInput = "0.07 0.075 0.09 1";
+        const string ColBtn = "0.26 0.28 0.32 0.95";
+        const string ColBtnOff = "0.17 0.175 0.20 0.8";
+        const string ColBtnOn = "0.80 0.42 0.16 0.95";
+        const string ColGreen = "0.28 0.52 0.30 0.95";
+        const string ColClose = "0.60 0.22 0.20 0.95";
+        const string ColWarn = "0.92 0.26 0.16 1";
+        const string ColText = "0.92 0.92 0.94 1";
+        const string ColDim = "0.62 0.62 0.67 1";
+        const string ColSoft = "0.42 0.42 0.47 1";
+
+        static readonly Dictionary<string, string> NombresCategoria = new Dictionary<string, string>
+        {
+            { "Weapon", "Armas" }, { "Construction", "Construcción" }, { "Items", "Objetos" },
+            { "Resources", "Recursos" }, { "Attire", "Ropa" }, { "Tool", "Herramientas" },
+            { "Medical", "Medicina" }, { "Food", "Comida" }, { "Ammunition", "Munición" },
+            { "Traps", "Trampas" }, { "Misc", "Varios" }, { "Common", "Común" },
+            { "Component", "Componentes" }, { "Electrical", "Electricidad" }, { "Fun", "Diversión" },
+            { "Favourite", "Favoritos" }, { "Search", "Búsqueda" }, { "All", "Todo" }
+        };
 
         // ─────────────────────────────────────────────────────────────
         //  Estado por jugador
@@ -42,9 +69,14 @@ namespace Oxide.Plugins
             public string Category = "@todos";
             public int Page;
             public string Search = "";
-            public int Amount = 1;
+            public int Amount = 1;              // -1 = stack completo
             public int SkinPage;
             public string SkinSearch = "";
+            public int SkinDarItemId;           // 0 = skins del item en la mano; si no, dar ese item con la skin
+            public ulong UltimaSkinDada;
+            public readonly List<int> Recientes = new List<int>();
+            public float ConfirmarLimpiarHasta;
+            public bool MenuAbierto;
         }
 
         readonly Dictionary<ulong, State> _state = new Dictionary<ulong, State>();
@@ -61,6 +93,7 @@ namespace Oxide.Plugins
         // ─────────────────────────────────────────────────────────────
         Dictionary<string, List<KeyValuePair<ulong, string>>> _skinsByItem;
         List<string> _categories;
+        Dictionary<string, int> _itemsPorCategoria;
 
         void OnServerInitialized()
         {
@@ -82,11 +115,19 @@ namespace Oxide.Plugins
 
         void BuildCategories()
         {
-            _categories = ItemManager.itemList
-                .Select(i => i.category.ToString())
-                .Distinct()
-                .OrderBy(c => c)
+            _itemsPorCategoria = ItemManager.itemList
+                .GroupBy(i => i.category.ToString())
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            _categories = _itemsPorCategoria.Keys
+                .OrderBy(NombreCategoria)
                 .ToList();
+        }
+
+        static string NombreCategoria(string cat)
+        {
+            string n;
+            return NombresCategoria.TryGetValue(cat, out n) ? n : cat;
         }
 
         void BuildSkinCache()
@@ -186,6 +227,12 @@ namespace Oxide.Plugins
             return null;
         }
 
+        int NumSkins(ItemDefinition def)
+        {
+            List<KeyValuePair<ulong, string>> l;
+            return _skinsByItem.TryGetValue(def.shortname, out l) ? l.Count : 0;
+        }
+
         // ─────────────────────────────────────────────────────────────
         //  Alimentar al plugin Skins (/skin)
         //
@@ -218,6 +265,9 @@ namespace Oxide.Plugins
         [ChatCommand("skinmenu")]
         void CmdSkinMenu(BasePlayer player, string cmd, string[] args) { AbrirSkins(player); }
 
+        [ChatCommand("limpiar")]
+        void CmdLimpiar(BasePlayer player, string cmd, string[] args) => LimpiarInventario(player);
+
         void AbrirItems(BasePlayer player)
         {
             St(player).Page = 0;
@@ -232,6 +282,7 @@ namespace Oxide.Plugins
                 return;
             }
             var s = St(player);
+            s.SkinDarItemId = 0;
             s.SkinPage = 0;
             s.SkinSearch = "";
             DibujarSkins(player);
@@ -251,34 +302,196 @@ namespace Oxide.Plugins
         }
 
         // ─────────────────────────────────────────────────────────────
+        //  Dar items
+        // ─────────────────────────────────────────────────────────────
+        // Reparte la cantidad en stacks validos: "rifle x10" son 10 rifles,
+        // no un rifle con amount=10. Devuelve lo que se ha dado de verdad.
+        static int DarItem(BasePlayer p, ItemDefinition def, int cantidad, ulong skin)
+        {
+            var stack = Math.Max(1, def.stackable);
+            cantidad = Math.Min(cantidad, stack * MaxStacksPorClic);
+            for (var resto = cantidad; resto > 0; resto -= stack)
+            {
+                var item = ItemManager.Create(def, Math.Min(resto, stack), skin);
+                if (item != null) p.GiveItem(item, BaseEntity.GiveItemReason.PickedUp);
+            }
+            return cantidad;
+        }
+
+        static int CantidadPara(State s, ItemDefinition def)
+        {
+            return s.Amount == -1 ? Math.Max(1, def.stackable) : s.Amount;
+        }
+
+        static void AnadirReciente(State s, int itemid)
+        {
+            s.Recientes.Remove(itemid);
+            s.Recientes.Insert(0, itemid);
+            if (s.Recientes.Count > PerPage) s.Recientes.RemoveAt(PerPage);
+        }
+
+        // Borra todo: inventario, cinturon y ropa
+        void LimpiarInventario(BasePlayer p)
+        {
+            p.inventory.Strip();
+            p.ChatMessage("<color=#8cf>[Creativo]</color> Inventario limpio.");
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        //  Piezas de UI
+        // ─────────────────────────────────────────────────────────────
+        // Siempre con cultura invariante: en un Windows en espanol "0.5"
+        // saldria como "0,5" y la UI se descuadraria.
+        static string F(float v) => v.ToString("0.####", CultureInfo.InvariantCulture);
+        static string P(float x, float y) => F(x) + " " + F(y);
+
+        static void Panel(CuiElementContainer c, string parent, string color, string min, string max, string name = null)
+        {
+            c.Add(new CuiPanel { Image = { Color = color }, RectTransform = { AnchorMin = min, AnchorMax = max } }, parent, name);
+        }
+
+        static void Texto(CuiElementContainer c, string parent, string text, int size, TextAnchor align,
+                          string color, string min, string max)
+        {
+            c.Add(new CuiLabel
+            {
+                Text = { Text = text, FontSize = size, Align = align, Color = color },
+                RectTransform = { AnchorMin = min, AnchorMax = max }
+            }, parent);
+        }
+
+        static void Boton(CuiElementContainer c, string parent, string text, string cmd, string color,
+                          string min, string max, int size = 12, string textColor = ColText)
+        {
+            c.Add(new CuiButton
+            {
+                Button = { Color = color, Command = cmd },
+                Text = { Text = text, FontSize = size, Align = TextAnchor.MiddleCenter, Color = textColor },
+                RectTransform = { AnchorMin = min, AnchorMax = max }
+            }, parent);
+        }
+
+        static void Entrada(CuiElementContainer c, string parent, string name, string text, string cmd,
+                            string min, string max, int chars, string placeholder, TextAnchor align)
+        {
+            Panel(c, parent, ColInput, min, max, name);
+            // El placeholder va debajo del input para no robarle los clics
+            if (string.IsNullOrEmpty(text) && placeholder != null)
+                Texto(c, name, placeholder, 11, align, ColSoft, "0.04 0", "0.96 1");
+            c.Add(new CuiElement
+            {
+                Parent = name,
+                Components =
+                {
+                    new CuiInputFieldComponent
+                    {
+                        Text = text, FontSize = 13, Align = align, Color = ColText,
+                        CharsLimit = chars, Command = cmd, NeedsKeyboard = true
+                    },
+                    new CuiRectTransformComponent { AnchorMin = "0.04 0", AnchorMax = "0.96 1" }
+                }
+            });
+        }
+
+        // Fondo oscurecido a pantalla completa (clic fuera = cerrar) + panel principal
+        static void Fondo(CuiElementContainer c, string root, string main, string cmdCerrar)
+        {
+            c.Add(new CuiPanel
+            {
+                Image = { Color = ColBackdrop },
+                RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" },
+                CursorEnabled = true
+            }, "Overlay", root);
+            Boton(c, root, "", cmdCerrar, "0 0 0 0", "0 0", "1 1");
+            Panel(c, root, ColBack, "0.06 0.07", "0.94 0.93", main);
+        }
+
+        static void Cabecera(CuiElementContainer c, string main, string titulo, string subtitulo)
+        {
+            Panel(c, main, ColHeader, "0 0.93", "1 1", main + ".head");
+            Panel(c, main, ColAccent, "0 0.926", "1 0.93");
+            Texto(c, main + ".head",
+                  titulo + "   <size=12><color=#9a9aa4>" + subtitulo + "</color></size>",
+                  18, TextAnchor.MiddleLeft, ColText, "0.012 0", "0.68 1");
+        }
+
+        static void Paginacion(CuiElementContainer c, string main, int page, int maxPage, string cmd)
+        {
+            var ant = page > 0;
+            var sig = page < maxPage;
+
+            Boton(c, main, "«", ant ? cmd + " 0" : "", ant ? ColBtn : ColBtnOff,
+                  "0.675 0.015", "0.71 0.07", 16, ant ? ColText : ColSoft);
+            Boton(c, main, "‹  ANTERIOR", ant ? cmd + " " + (page - 1) : "", ant ? ColBtn : ColBtnOff,
+                  "0.714 0.015", "0.80 0.07", 12, ant ? ColText : ColSoft);
+            Texto(c, main, (page + 1) + " / " + (maxPage + 1), 13, TextAnchor.MiddleCenter, ColText,
+                  "0.80 0.015", "0.866 0.07");
+            Boton(c, main, "SIGUIENTE  ›", sig ? cmd + " " + (page + 1) : "", sig ? ColBtn : ColBtnOff,
+                  "0.866 0.015", "0.952 0.07", 12, sig ? ColText : ColSoft);
+            Boton(c, main, "»", sig ? cmd + " " + maxPage : "", sig ? ColBtn : ColBtnOff,
+                  "0.956 0.015", "0.992 0.07", 16, sig ? ColText : ColSoft);
+        }
+
+        // Rectangulo de la celda i dentro de una rejilla Cols x Rows
+        static void Celda(int i, float margenX, out string min, out string max)
+        {
+            var ancho = 1f / Cols;
+            var alto = 1f / Rows;
+            var x1 = (i % Cols) * ancho;
+            var y2 = 1f - (i / Cols) * alto;
+            min = P(x1 + margenX, y2 - alto + 0.012f);
+            max = P(x1 + ancho - margenX, y2 - 0.012f);
+        }
+
+        // ─────────────────────────────────────────────────────────────
         //  MENU DE ITEMS
         // ─────────────────────────────────────────────────────────────
         List<ItemDefinition> FiltrarItems(State s)
         {
-            IEnumerable<ItemDefinition> q = ItemManager.itemList;
-
             if (!string.IsNullOrEmpty(s.Search))
             {
                 var needle = s.Search.ToLower();
-                q = q.Where(i => i.shortname.ToLower().Contains(needle)
-                              || NombreDe(i).ToLower().Contains(needle));
+                return ItemManager.itemList
+                    .Select(i => new KeyValuePair<ItemDefinition, int>(i, Relevancia(i, needle)))
+                    .Where(k => k.Value < 3)
+                    .OrderBy(k => k.Value)
+                    .ThenBy(k => NombreDe(k.Key))
+                    .Select(k => k.Key)
+                    .ToList();
             }
-            else if (s.Category == "@skins")
-            {
+
+            if (s.Category == "@recientes")
+                return s.Recientes
+                    .Select(id => ItemManager.FindItemDefinition(id))
+                    .Where(d => d != null)
+                    .ToList();
+
+            IEnumerable<ItemDefinition> q = ItemManager.itemList;
+            if (s.Category == "@skins")
                 q = q.Where(i => _skinsByItem.ContainsKey(i.shortname));
-            }
             else if (s.Category != "@todos")
-            {
                 q = q.Where(i => i.category.ToString() == s.Category);
-            }
 
             return q.OrderBy(i => NombreDe(i)).ToList();
         }
 
+        // 0 = coincidencia exacta (nombre, shortname o itemid), 1 = empieza por, 2 = contiene, 3 = nada
+        static int Relevancia(ItemDefinition i, string needle)
+        {
+            var sn = i.shortname.ToLower();
+            var nombre = NombreDe(i).ToLower();
+            if (sn == needle || nombre == needle || i.itemid.ToString() == needle) return 0;
+            if (sn.StartsWith(needle) || nombre.StartsWith(needle)) return 1;
+            if (sn.Contains(needle) || nombre.Contains(needle)) return 2;
+            return 3;
+        }
+
         void DibujarItems(BasePlayer player)
         {
+            var s = St(player);
+            s.MenuAbierto = true;
             CuiHelper.DestroyUi(player, UiRoot);
-            CuiHelper.AddUi(player, ConstruirItems(St(player)));
+            CuiHelper.AddUi(player, ConstruirItems(s));
         }
 
         CuiElementContainer ConstruirItems(State s)
@@ -289,146 +502,81 @@ namespace Oxide.Plugins
             if (s.Page < 0) s.Page = 0;
 
             var c = new CuiElementContainer();
+            Fondo(c, UiRoot, UiMain, "stm.close");
 
-            c.Add(new CuiPanel
-            {
-                Image = { Color = ColBack },
-                RectTransform = { AnchorMin = "0.06 0.08", AnchorMax = "0.94 0.94" },
-                CursorEnabled = true
-            }, "Overlay", UiRoot);
+            // ── cabecera
+            string sub;
+            if (!string.IsNullOrEmpty(s.Search)) sub = items.Count + " resultados para \"" + s.Search + "\"";
+            else if (s.Category == "@recientes") sub = items.Count + " recientes";
+            else sub = items.Count + " items";
+            Cabecera(c, UiMain, "SPAWN DE ITEMS", sub);
 
-            c.Add(new CuiLabel
-            {
-                Text = { Text = "SPAWN DE ITEMS", FontSize = 20, Align = TextAnchor.MiddleLeft, Color = ColText },
-                RectTransform = { AnchorMin = "0.015 0.985", AnchorMax = "0.4 1.03" }
-            }, UiRoot);
-
-            c.Add(new CuiLabel
-            {
-                Text = { Text = items.Count + " items  -  pagina " + (s.Page + 1) + "/" + (maxPage + 1),
-                         FontSize = 12, Align = TextAnchor.MiddleRight, Color = ColDim },
-                RectTransform = { AnchorMin = "0.55 0.985", AnchorMax = "0.86 1.03" }
-            }, UiRoot);
-
-            c.Add(new CuiButton
-            {
-                Button = { Color = ColClose, Command = "stm.clearinv" },
-                Text = { Text = "LIMPIAR INVENTARIO", FontSize = 11, Align = TextAnchor.MiddleCenter, Color = ColText },
-                RectTransform = { AnchorMin = "0.33 0.982", AnchorMax = "0.50 1.032" }
-            }, UiRoot);
-
-            c.Add(new CuiButton
-            {
-                Button = { Color = ColClose, Command = "stm.close" },
-                Text = { Text = "CERRAR", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                RectTransform = { AnchorMin = "0.885 0.982", AnchorMax = "0.985 1.032" }
-            }, UiRoot);
+            var confirmando = Time.realtimeSinceStartup < s.ConfirmarLimpiarHasta;
+            Boton(c, UiMain + ".head",
+                  confirmando ? "¿SEGURO? CLIC OTRA VEZ" : "LIMPIAR INVENTARIO", "stm.clearinv",
+                  confirmando ? ColWarn : ColClose, "0.68 0.16", "0.862 0.84", 11);
+            Boton(c, UiMain + ".head", "CERRAR  ×", "stm.close", ColBtn, "0.87 0.16", "0.992 0.84", 12);
 
             // ── barra lateral de categorias
-            c.Add(new CuiPanel
-            {
-                Image = { Color = ColPanel },
-                RectTransform = { AnchorMin = "0.008 0.01", AnchorMax = "0.145 0.975" }
-            }, UiRoot, "stm.side");
+            Panel(c, UiMain, ColPanel, "0.008 0.015", "0.15 0.915", "stm.side");
 
-            var tabs = new List<string> { "@todos", "@skins" };
+            var tabs = new List<string> { "@todos", "@recientes", "@skins" };
             tabs.AddRange(_categories);
 
             var alto = 1f / Math.Max(tabs.Count, 1);
             for (var i = 0; i < tabs.Count; i++)
             {
                 var tab = tabs[i];
-                var etiqueta = tab == "@todos" ? "TODOS" : tab == "@skins" ? "CON SKINS" : tab.ToUpper();
+                string etiqueta;
+                if (tab == "@todos") etiqueta = "TODOS  <color=#8a8a94>" + ItemManager.itemList.Count + "</color>";
+                else if (tab == "@recientes") etiqueta = "RECIENTES  <color=#8a8a94>" + s.Recientes.Count + "</color>";
+                else if (tab == "@skins") etiqueta = "CON SKINS  <color=#8a8a94>" + _skinsByItem.Count + "</color>";
+                else etiqueta = NombreCategoria(tab) + "  <color=#8a8a94>" + _itemsPorCategoria[tab] + "</color>";
+
                 var activo = string.IsNullOrEmpty(s.Search) && s.Category == tab;
                 var y1 = 1f - (i + 1) * alto;
                 var y2 = 1f - i * alto;
-
-                c.Add(new CuiButton
-                {
-                    Button = { Color = activo ? ColBtnOn : ColCell, Command = "stm.cat " + tab },
-                    Text = { Text = etiqueta, FontSize = 11, Align = TextAnchor.MiddleCenter, Color = ColText },
-                    RectTransform =
-                    {
-                        AnchorMin = "0.04 " + (y1 + 0.004f).ToString("0.####"),
-                        AnchorMax = "0.96 " + (y2 - 0.004f).ToString("0.####")
-                    }
-                }, "stm.side");
+                Boton(c, "stm.side", etiqueta, "stm.cat " + tab, activo ? ColBtnOn : ColCell,
+                      P(0.05f, y1 + 0.003f), P(0.95f, y2 - 0.003f), 11);
             }
 
             // ── buscador
-            c.Add(new CuiPanel
-            {
-                Image = { Color = ColCell },
-                RectTransform = { AnchorMin = "0.155 0.925", AnchorMax = "0.52 0.975" }
-            }, UiRoot, "stm.searchbox");
-
-            c.Add(new CuiElement
-            {
-                Parent = "stm.searchbox",
-                Components =
-                {
-                    new CuiInputFieldComponent
-                    {
-                        Text = s.Search, FontSize = 13, Align = TextAnchor.MiddleLeft, Color = ColText,
-                        CharsLimit = 40, Command = "stm.search", NeedsKeyboard = true
-                    },
-                    new CuiRectTransformComponent { AnchorMin = "0.02 0", AnchorMax = "0.98 1" }
-                }
-            });
-
-            if (string.IsNullOrEmpty(s.Search))
-            {
-                c.Add(new CuiLabel
-                {
-                    Text = { Text = "escribe y pulsa Enter para buscar...", FontSize = 11,
-                             Align = TextAnchor.MiddleLeft, Color = "0.5 0.5 0.55 1" },
-                    RectTransform = { AnchorMin = "0.17 0.925", AnchorMax = "0.52 0.975" }
-                }, UiRoot);
-            }
-            else
-            {
-                c.Add(new CuiButton
-                {
-                    Button = { Color = ColClose, Command = "stm.cat @todos" },
-                    Text = { Text = "X", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                    RectTransform = { AnchorMin = "0.527 0.925", AnchorMax = "0.558 0.975" }
-                }, UiRoot);
-            }
+            Entrada(c, UiMain, "stm.searchbox", s.Search, "stm.search", "0.16 0.848", "0.50 0.905",
+                    40, "Buscar por nombre, shortname o ID y pulsa Enter...", TextAnchor.MiddleLeft);
+            if (!string.IsNullOrEmpty(s.Search))
+                Boton(c, UiMain, "×", "stm.cat @todos", ColClose, "0.503 0.848", "0.53 0.905", 12);
 
             // ── selector de cantidad
+            Texto(c, UiMain, "CANTIDAD", 11, TextAnchor.MiddleRight, ColDim, "0.535 0.848", "0.595 0.905");
+
             var cantidades = new[] { 1, 10, 100, 1000 };
-            for (var i = 0; i < cantidades.Length; i++)
+            var x = 0.60f;
+            for (var i = 0; i < cantidades.Length; i++, x += 0.055f)
             {
                 var n = cantidades[i];
-                var x1 = 0.60f + i * 0.075f;
-                c.Add(new CuiButton
-                {
-                    Button = { Color = s.Amount == n ? ColBtnOn : ColCell, Command = "stm.amount " + n },
-                    Text = { Text = "x" + n, FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                    RectTransform =
-                    {
-                        AnchorMin = x1.ToString("0.####") + " 0.925",
-                        AnchorMax = (x1 + 0.068f).ToString("0.####") + " 0.975"
-                    }
-                }, UiRoot);
+                Boton(c, UiMain, "x" + n, "stm.amount " + n, s.Amount == n ? ColBtnOn : ColCell,
+                      P(x, 0.848f), P(x + 0.051f, 0.905f), 12);
             }
+            Boton(c, UiMain, "STACK", "stm.amount -1", s.Amount == -1 ? ColBtnOn : ColCell,
+                  P(x, 0.848f), P(x + 0.051f, 0.905f), 11);
+            x += 0.055f;
 
-            c.Add(new CuiButton
-            {
-                Button = { Color = s.Amount == -1 ? ColBtnOn : ColCell, Command = "stm.amount -1" },
-                Text = { Text = "STACK", FontSize = 11, Align = TextAnchor.MiddleCenter, Color = ColText },
-                RectTransform = { AnchorMin = "0.90 0.925", AnchorMax = "0.99 0.975" }
-            }, UiRoot);
+            var personalizada = s.Amount != -1 && Array.IndexOf(cantidades, s.Amount) < 0;
+            Entrada(c, UiMain, "stm.amountbox", personalizada ? s.Amount.ToString() : "", "stm.amount",
+                    P(x, 0.848f), "0.992 0.905", 7, "otra...", TextAnchor.MiddleCenter);
+            if (personalizada)
+                Panel(c, UiMain, ColAccent, P(x, 0.842f), "0.992 0.846");
 
             // ── rejilla
-            c.Add(new CuiPanel
-            {
-                Image = { Color = "0 0 0 0" },
-                RectTransform = { AnchorMin = "0.155 0.075", AnchorMax = "0.99 0.915" }
-            }, UiRoot, UiGrid);
+            Panel(c, UiMain, "0 0 0 0", "0.16 0.085", "0.992 0.835", UiGrid);
 
-            var anchoCelda = 1f / Cols;
-            var altoCelda = 1f / Rows;
+            if (items.Count == 0)
+            {
+                Texto(c, UiGrid, s.Category == "@recientes" && string.IsNullOrEmpty(s.Search)
+                        ? "Aún no has sacado nada. Los items que spawnees aparecerán aquí."
+                        : "No hay items que coincidan.",
+                      16, TextAnchor.MiddleCenter, ColDim, "0 0", "1 1");
+            }
 
             for (var i = 0; i < PerPage; i++)
             {
@@ -436,22 +584,10 @@ namespace Oxide.Plugins
                 if (idx >= items.Count) break;
                 var def = items[idx];
 
-                var col = i % Cols;
-                var fila = i / Cols;
-                var x1 = col * anchoCelda;
-                var y2 = 1f - fila * altoCelda;
-                var y1 = y2 - altoCelda;
-
+                string min, max;
+                Celda(i, 0.005f, out min, out max);
                 var cell = "stm.cell." + i;
-                c.Add(new CuiPanel
-                {
-                    Image = { Color = ColCell },
-                    RectTransform =
-                    {
-                        AnchorMin = (x1 + 0.005f).ToString("0.####") + " " + (y1 + 0.012f).ToString("0.####"),
-                        AnchorMax = (x1 + anchoCelda - 0.005f).ToString("0.####") + " " + (y2 - 0.012f).ToString("0.####")
-                    }
-                }, UiGrid, cell);
+                Panel(c, UiGrid, ColCell, min, max, cell);
 
                 c.Add(new CuiElement
                 {
@@ -459,82 +595,73 @@ namespace Oxide.Plugins
                     Components =
                     {
                         new CuiImageComponent { ItemId = def.itemid },
-                        new CuiRectTransformComponent { AnchorMin = "0.18 0.32", AnchorMax = "0.82 0.94" }
+                        new CuiRectTransformComponent { AnchorMin = "0.2 0.36", AnchorMax = "0.8 0.95" }
                     }
                 });
 
-                c.Add(new CuiLabel
-                {
-                    Text = { Text = NombreDe(def), FontSize = 10, Align = TextAnchor.UpperCenter, Color = ColText },
-                    RectTransform = { AnchorMin = "0.02 0.10", AnchorMax = "0.98 0.34" }
-                }, cell);
+                Texto(c, cell, NombreDe(def), 10, TextAnchor.MiddleCenter, ColText, "0.03 0.17", "0.97 0.37");
 
-                var nSkins = _skinsByItem.ContainsKey(def.shortname) ? _skinsByItem[def.shortname].Count : 0;
-                c.Add(new CuiLabel
-                {
-                    Text = { Text = nSkins > 0 ? nSkins + " skins" : def.shortname,
-                             FontSize = 9, Align = TextAnchor.LowerCenter,
-                             Color = nSkins > 0 ? "0.45 0.75 0.5 1" : ColDim },
-                    RectTransform = { AnchorMin = "0.02 0.01", AnchorMax = "0.98 0.13" }
-                }, cell);
+                if (def.stackable > 1)
+                    Texto(c, cell, "x" + def.stackable, 9, TextAnchor.UpperRight, ColSoft, "0.5 0.8", "0.96 0.97");
 
-                c.Add(new CuiButton
-                {
-                    Button = { Color = "0 0 0 0", Command = "stm.give " + def.itemid },
-                    Text = { Text = "" },
-                    RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" }
-                }, cell);
+                // Toda la celda: recibir el item
+                Boton(c, cell, "", "stm.give " + def.itemid, "0 0 0 0", "0 0", "1 1");
+
+                // Encima: la pastilla de skins abre el selector para recibirlo ya con skin
+                var nSkins = NumSkins(def);
+                if (nSkins > 0)
+                    Boton(c, cell, "ELEGIR SKIN  <color=#cfe8d0>(" + nSkins + ")</color>", "stm.skinsof " + def.itemid,
+                          ColGreen, "0.06 0.03", "0.94 0.16", 9);
+                else
+                    Texto(c, cell, def.shortname, 9, TextAnchor.MiddleCenter, ColSoft, "0.03 0.03", "0.97 0.16");
             }
 
-            if (s.Page > 0)
-            {
-                c.Add(new CuiButton
-                {
-                    Button = { Color = ColBtn, Command = "stm.page " + (s.Page - 1) },
-                    Text = { Text = "< ANTERIOR", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                    RectTransform = { AnchorMin = "0.155 0.015", AnchorMax = "0.30 0.065" }
-                }, UiRoot);
-            }
-
-            if (s.Page < maxPage)
-            {
-                c.Add(new CuiButton
-                {
-                    Button = { Color = ColBtn, Command = "stm.page " + (s.Page + 1) },
-                    Text = { Text = "SIGUIENTE >", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                    RectTransform = { AnchorMin = "0.845 0.015", AnchorMax = "0.99 0.065" }
-                }, UiRoot);
-            }
-
-            c.Add(new CuiLabel
-            {
-                Text = { Text = "Clic en un item para recibirlo  -  /sk abre las skins del item que lleves en la mano",
-                         FontSize = 11, Align = TextAnchor.MiddleCenter, Color = ColDim },
-                RectTransform = { AnchorMin = "0.31 0.015", AnchorMax = "0.84 0.065" }
-            }, UiRoot);
+            // ── pie
+            Texto(c, UiMain, "Clic en un item para recibirlo   ·   ELEGIR SKIN: te lo da con la skin   ·   /sk: skins del item en la mano",
+                  10, TextAnchor.MiddleLeft, ColDim, "0.16 0.015", "0.67 0.07");
+            Paginacion(c, UiMain, s.Page, maxPage, "stm.page");
 
             return c;
         }
 
         // ─────────────────────────────────────────────────────────────
         //  MENU DE SKINS
+        //   - desde /sk: aplica la skin al item que llevas en la mano
+        //   - desde ELEGIR SKIN del /menu: te da el item con esa skin
         // ─────────────────────────────────────────────────────────────
         void DibujarSkins(BasePlayer player)
         {
-            var item = ItemEnMano(player);
-            if (item == null)
+            var s = St(player);
+            ItemDefinition def;
+            ulong actual;
+
+            if (s.SkinDarItemId != 0)
             {
-                CuiHelper.DestroyUi(player, UiSkinRoot);
-                player.ChatMessage("<color=#e88>Coge un item en la mano primero.</color>");
-                return;
+                def = ItemManager.FindItemDefinition(s.SkinDarItemId);
+                actual = s.UltimaSkinDada;
             }
+            else
+            {
+                var item = ItemEnMano(player);
+                if (item == null)
+                {
+                    CuiHelper.DestroyUi(player, UiSkinRoot);
+                    player.ChatMessage("<color=#e88>Coge un item en la mano primero.</color>");
+                    return;
+                }
+                def = item.info;
+                actual = item.skin;
+            }
+            if (def == null) return;
 
             CuiHelper.DestroyUi(player, UiSkinRoot);
-            CuiHelper.AddUi(player, ConstruirSkins(item.info, item.skin, St(player)));
+            CuiHelper.AddUi(player, ConstruirSkins(def, actual, s));
         }
 
         CuiElementContainer ConstruirSkins(ItemDefinition def, ulong skinActual, State s)
         {
+            var modoDar = s.SkinDarItemId != 0;
+
             List<KeyValuePair<ulong, string>> todas;
             if (!_skinsByItem.TryGetValue(def.shortname, out todas))
                 todas = new List<KeyValuePair<ulong, string>>();
@@ -552,98 +679,35 @@ namespace Oxide.Plugins
             if (s.SkinPage < 0) s.SkinPage = 0;
 
             var c = new CuiElementContainer();
+            Fondo(c, UiSkinRoot, UiSkinMain, "stm.closeskin");
 
-            c.Add(new CuiPanel
-            {
-                Image = { Color = ColBack },
-                RectTransform = { AnchorMin = "0.06 0.08", AnchorMax = "0.94 0.94" },
-                CursorEnabled = true
-            }, "Overlay", UiSkinRoot);
+            Cabecera(c, UiSkinMain, "SKINS DE: " + NombreDe(def).ToUpper(),
+                     lista.Count + (lista.Count == todas.Count ? "" : " de " + todas.Count) + " skins");
+            Boton(c, UiSkinMain + ".head", modoDar ? "‹  VOLVER" : "CERRAR  ×", "stm.closeskin", ColBtn,
+                  "0.87 0.16", "0.992 0.84", 12);
 
-            c.Add(new CuiLabel
-            {
-                Text = { Text = "SKINS DE: " + NombreDe(def).ToUpper(), FontSize = 20,
-                         Align = TextAnchor.MiddleLeft, Color = ColText },
-                RectTransform = { AnchorMin = "0.015 0.985", AnchorMax = "0.55 1.03" }
-            }, UiSkinRoot);
+            // ── barra de herramientas
+            Entrada(c, UiSkinMain, "stm.sksearchbox", s.SkinSearch, "stm.sksearch", "0.008 0.848", "0.33 0.905",
+                    40, "Buscar skin por nombre o ID y pulsa Enter...", TextAnchor.MiddleLeft);
+            if (!string.IsNullOrEmpty(s.SkinSearch))
+                Boton(c, UiSkinMain, "×", "stm.sksearch", ColClose, "0.333 0.848", "0.36 0.905", 12);
 
-            c.Add(new CuiLabel
-            {
-                Text = { Text = lista.Count + " skins  -  pagina " + (s.SkinPage + 1) + "/" + (maxPage + 1),
-                         FontSize = 12, Align = TextAnchor.MiddleRight, Color = ColDim },
-                RectTransform = { AnchorMin = "0.55 0.985", AnchorMax = "0.86 1.03" }
-            }, UiSkinRoot);
+            Boton(c, UiSkinMain, modoDar ? "DAR SIN SKIN" : "QUITAR SKIN", "stm.applyskin 0", ColClose,
+                  "0.37 0.848", "0.50 0.905", 12);
 
-            c.Add(new CuiButton
-            {
-                Button = { Color = ColClose, Command = "stm.closeskin" },
-                Text = { Text = "CERRAR", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                RectTransform = { AnchorMin = "0.885 0.982", AnchorMax = "0.985 1.032" }
-            }, UiSkinRoot);
+            var info = modoDar
+                ? "Clic en una skin para recibir el item  ·  cantidad: " + (s.Amount == -1 ? "stack" : "x" + s.Amount)
+                : "Clic en una skin para aplicarla al item de tu mano  ·  skin actual: " + skinActual;
+            Texto(c, UiSkinMain, info, 11, TextAnchor.MiddleRight, ColDim, "0.51 0.848", "0.992 0.905");
 
-            c.Add(new CuiPanel
-            {
-                Image = { Color = ColCell },
-                RectTransform = { AnchorMin = "0.008 0.925", AnchorMax = "0.35 0.975" }
-            }, UiSkinRoot, "stm.sksearchbox");
-
-            c.Add(new CuiElement
-            {
-                Parent = "stm.sksearchbox",
-                Components =
-                {
-                    new CuiInputFieldComponent
-                    {
-                        Text = s.SkinSearch, FontSize = 13, Align = TextAnchor.MiddleLeft, Color = ColText,
-                        CharsLimit = 40, Command = "stm.sksearch", NeedsKeyboard = true
-                    },
-                    new CuiRectTransformComponent { AnchorMin = "0.02 0", AnchorMax = "0.98 1" }
-                }
-            });
-
-            if (string.IsNullOrEmpty(s.SkinSearch))
-            {
-                c.Add(new CuiLabel
-                {
-                    Text = { Text = "buscar skin por nombre o ID...", FontSize = 11,
-                             Align = TextAnchor.MiddleLeft, Color = "0.5 0.5 0.55 1" },
-                    RectTransform = { AnchorMin = "0.025 0.925", AnchorMax = "0.35 0.975" }
-                }, UiSkinRoot);
-            }
-
-            c.Add(new CuiButton
-            {
-                Button = { Color = ColClose, Command = "stm.applyskin 0" },
-                Text = { Text = "QUITAR SKIN (por defecto)", FontSize = 12,
-                         Align = TextAnchor.MiddleCenter, Color = ColText },
-                RectTransform = { AnchorMin = "0.36 0.925", AnchorMax = "0.60 0.975" }
-            }, UiSkinRoot);
-
-            c.Add(new CuiLabel
-            {
-                Text = { Text = "skin actual: " + skinActual, FontSize = 12,
-                         Align = TextAnchor.MiddleRight, Color = ColDim },
-                RectTransform = { AnchorMin = "0.61 0.925", AnchorMax = "0.99 0.975" }
-            }, UiSkinRoot);
-
-            c.Add(new CuiPanel
-            {
-                Image = { Color = "0 0 0 0" },
-                RectTransform = { AnchorMin = "0.008 0.075", AnchorMax = "0.99 0.915" }
-            }, UiSkinRoot, UiSkinGrid);
+            // ── rejilla
+            Panel(c, UiSkinMain, "0 0 0 0", "0.008 0.085", "0.992 0.835", UiSkinGrid);
 
             if (lista.Count == 0)
             {
-                c.Add(new CuiLabel
-                {
-                    Text = { Text = "Este item no tiene skins aprobadas.", FontSize = 16,
-                             Align = TextAnchor.MiddleCenter, Color = ColDim },
-                    RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" }
-                }, UiSkinGrid);
+                Texto(c, UiSkinGrid, todas.Count == 0 ? "Este item no tiene skins aprobadas." : "Ninguna skin coincide.",
+                      16, TextAnchor.MiddleCenter, ColDim, "0 0", "1 1");
             }
-
-            var anchoCelda = 1f / Cols;
-            var altoCelda = 1f / Rows;
 
             for (var i = 0; i < PerPage; i++)
             {
@@ -651,24 +715,14 @@ namespace Oxide.Plugins
                 if (idx >= lista.Count) break;
                 var skin = lista[idx];
 
-                var col = i % Cols;
-                var fila = i / Cols;
-                var x1 = col * anchoCelda;
-                var y2 = 1f - fila * altoCelda;
-                var y1 = y2 - altoCelda;
-
+                string min, max;
+                Celda(i, 0.004f, out min, out max);
                 var cell = "stm.skcell." + i;
                 var esActual = skinActual == skin.Key;
 
-                c.Add(new CuiPanel
-                {
-                    Image = { Color = esActual ? ColBtnOn : ColCell },
-                    RectTransform =
-                    {
-                        AnchorMin = (x1 + 0.004f).ToString("0.####") + " " + (y1 + 0.012f).ToString("0.####"),
-                        AnchorMax = (x1 + anchoCelda - 0.004f).ToString("0.####") + " " + (y2 - 0.012f).ToString("0.####")
-                    }
-                }, UiSkinGrid, cell);
+                Panel(c, UiSkinGrid, esActual ? ColGreen : ColCell, min, max, cell);
+                if (esActual)
+                    Panel(c, cell, ColAccent, "0 0.97", "1 1");
 
                 c.Add(new CuiElement
                 {
@@ -680,53 +734,18 @@ namespace Oxide.Plugins
                     }
                 });
 
-                c.Add(new CuiLabel
-                {
-                    Text = { Text = skin.Value, FontSize = 10, Align = TextAnchor.UpperCenter, Color = ColText },
-                    RectTransform = { AnchorMin = "0.02 0.12", AnchorMax = "0.98 0.36" }
-                }, cell);
+                Texto(c, cell, skin.Value, 10, TextAnchor.MiddleCenter, ColText, "0.03 0.14", "0.97 0.35");
+                Texto(c, cell, skin.Key.ToString(), 9, TextAnchor.MiddleCenter, "0.55 0.75 0.9 1", "0.02 0.02", "0.98 0.14");
 
-                c.Add(new CuiLabel
-                {
-                    Text = { Text = skin.Key.ToString(), FontSize = 10,
-                             Align = TextAnchor.LowerCenter, Color = "0.55 0.75 0.9 1" },
-                    RectTransform = { AnchorMin = "0.02 0.01", AnchorMax = "0.98 0.14" }
-                }, cell);
-
-                c.Add(new CuiButton
-                {
-                    Button = { Color = "0 0 0 0", Command = "stm.applyskin " + skin.Key },
-                    Text = { Text = "" },
-                    RectTransform = { AnchorMin = "0 0", AnchorMax = "1 1" }
-                }, cell);
+                Boton(c, cell, "", "stm.applyskin " + skin.Key, "0 0 0 0", "0 0", "1 1");
             }
 
-            if (s.SkinPage > 0)
-            {
-                c.Add(new CuiButton
-                {
-                    Button = { Color = ColBtn, Command = "stm.skpage " + (s.SkinPage - 1) },
-                    Text = { Text = "< ANTERIOR", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                    RectTransform = { AnchorMin = "0.008 0.015", AnchorMax = "0.15 0.065" }
-                }, UiSkinRoot);
-            }
-
-            if (s.SkinPage < maxPage)
-            {
-                c.Add(new CuiButton
-                {
-                    Button = { Color = ColBtn, Command = "stm.skpage " + (s.SkinPage + 1) },
-                    Text = { Text = "SIGUIENTE >", FontSize = 12, Align = TextAnchor.MiddleCenter, Color = ColText },
-                    RectTransform = { AnchorMin = "0.845 0.015", AnchorMax = "0.99 0.065" }
-                }, UiSkinRoot);
-            }
-
-            c.Add(new CuiLabel
-            {
-                Text = { Text = "Clic en una skin para aplicarla al item que llevas en la mano",
-                         FontSize = 11, Align = TextAnchor.MiddleCenter, Color = ColDim },
-                RectTransform = { AnchorMin = "0.16 0.015", AnchorMax = "0.84 0.065" }
-            }, UiSkinRoot);
+            // ── pie
+            Texto(c, UiSkinMain, modoDar
+                    ? "Clic fuera o en VOLVER para regresar al spawn de items"
+                    : "Clic fuera o en CERRAR para salir   ·   /skin abre la caja del plugin Skins",
+                  10, TextAnchor.MiddleLeft, ColDim, "0.01 0.015", "0.67 0.07");
+            Paginacion(c, UiSkinMain, s.SkinPage, maxPage, "stm.skpage");
 
             return c;
         }
@@ -738,6 +757,9 @@ namespace Oxide.Plugins
         void CcClose(ConsoleSystem.Arg arg)
         {
             var p = arg.Player(); if (p == null) return;
+            var s = St(p);
+            s.MenuAbierto = false;
+            s.ConfirmarLimpiarHasta = 0;
             CuiHelper.DestroyUi(p, UiRoot);
         }
 
@@ -771,7 +793,14 @@ namespace Oxide.Plugins
         void CcAmount(ConsoleSystem.Arg arg)
         {
             var p = arg.Player(); if (p == null) return;
-            St(p).Amount = arg.GetInt(0, 1);
+            var texto = arg.Args == null ? "" : string.Join("", arg.Args).Trim().TrimStart('x', 'X');
+            int n;
+            if (!int.TryParse(texto, out n) || (n < 1 && n != -1))
+            {
+                DibujarItems(p);   // entrada invalida: se redibuja con el valor anterior
+                return;
+            }
+            St(p).Amount = Math.Min(n, MaxCantidad);
             DibujarItems(p);
         }
 
@@ -793,31 +822,52 @@ namespace Oxide.Plugins
             if (def == null) return;
 
             var s = St(p);
-            var cantidad = s.Amount == -1 ? Math.Max(1, def.stackable) : s.Amount;
-
-            var item = ItemManager.Create(def, cantidad);
-            if (item == null) return;
-
-            p.GiveItem(item, BaseEntity.GiveItemReason.PickedUp);
-            p.ChatMessage("<color=#8cf>+</color> " + NombreDe(def) + " x" + cantidad);
+            var dado = DarItem(p, def, CantidadPara(s, def), 0UL);
+            AnadirReciente(s, def.itemid);
+            p.ChatMessage("<color=#8cf>+</color> " + NombreDe(def) + " x" + dado);
         }
 
-        // Borra todo: inventario, cinturon y ropa
-        void LimpiarInventario(BasePlayer p)
-        {
-            p.inventory.Strip();
-            p.ChatMessage("<color=#8cf>[Creativo]</color> Inventario limpio.");
-        }
-
+        // Dos clics: el primero arma el boton ("¿SEGURO?") durante unos segundos
         [ConsoleCommand("stm.clearinv")]
         void CcClearInv(ConsoleSystem.Arg arg)
         {
             var p = arg.Player(); if (p == null) return;
-            LimpiarInventario(p);
+            var s = St(p);
+
+            if (Time.realtimeSinceStartup < s.ConfirmarLimpiarHasta)
+            {
+                s.ConfirmarLimpiarHasta = 0;
+                LimpiarInventario(p);
+                DibujarItems(p);
+                return;
+            }
+
+            s.ConfirmarLimpiarHasta = Time.realtimeSinceStartup + SegundosConfirmar;
+            DibujarItems(p);
+
+            // Si no confirma, el boton vuelve a su estado normal
+            timer.Once(SegundosConfirmar + 0.1f, () =>
+            {
+                if (p == null || !p.IsConnected || !s.MenuAbierto || s.ConfirmarLimpiarHasta == 0) return;
+                s.ConfirmarLimpiarHasta = 0;
+                DibujarItems(p);
+            });
         }
 
-        [ChatCommand("limpiar")]
-        void CmdLimpiar(BasePlayer player, string cmd, string[] args) => LimpiarInventario(player);
+        [ConsoleCommand("stm.skinsof")]
+        void CcSkinsOf(ConsoleSystem.Arg arg)
+        {
+            var p = arg.Player(); if (p == null) return;
+            var def = ItemManager.FindItemDefinition(arg.GetInt(0, 0));
+            if (def == null) return;
+
+            var s = St(p);
+            s.SkinDarItemId = def.itemid;
+            s.UltimaSkinDada = 0;
+            s.SkinPage = 0;
+            s.SkinSearch = "";
+            DibujarSkins(p);
+        }
 
         [ConsoleCommand("stm.skpage")]
         void CcSkPage(ConsoleSystem.Arg arg)
@@ -841,6 +891,25 @@ namespace Oxide.Plugins
         void CcApplySkin(ConsoleSystem.Arg arg)
         {
             var p = arg.Player(); if (p == null) return;
+            var s = St(p);
+
+            ulong skinId;
+            if (!ulong.TryParse(arg.GetString(0, "0"), out skinId)) return;
+
+            // Modo "ELEGIR SKIN" del /menu: dar el item ya con la skin
+            if (s.SkinDarItemId != 0)
+            {
+                var def = ItemManager.FindItemDefinition(s.SkinDarItemId);
+                if (def == null) return;
+
+                var dado = DarItem(p, def, CantidadPara(s, def), skinId);
+                AnadirReciente(s, def.itemid);
+                s.UltimaSkinDada = skinId;
+                p.ChatMessage("<color=#8cf>+</color> " + NombreDe(def) + " x" + dado
+                              + (skinId == 0 ? " (sin skin)" : " <color=#9ab>skin " + skinId + "</color>"));
+                DibujarSkins(p);
+                return;
+            }
 
             var item = ItemEnMano(p);
             if (item == null)
@@ -848,9 +917,6 @@ namespace Oxide.Plugins
                 p.ChatMessage("<color=#e88>Coge un item en la mano primero.</color>");
                 return;
             }
-
-            ulong skinId;
-            if (!ulong.TryParse(arg.GetString(0, "0"), out skinId)) return;
 
             item.skin = skinId;
             item.MarkDirty();
@@ -870,17 +936,19 @@ namespace Oxide.Plugins
         }
 
         // ─────────────────────────────────────────────────────────────
-        //  Autotest: construye las dos UIs y las serializa sin jugador,
+        //  Autotest: construye las UIs y las serializa sin jugador,
         //  para validar la estructura desde la consola del servidor.
         // ─────────────────────────────────────────────────────────────
         [ConsoleCommand("stm.selftest")]
         void CcSelfTest(ConsoleSystem.Arg arg)
         {
             var fallos = 0;
+            var vistas = 0;
             var s = new State();
+            s.Recientes.AddRange(ItemManager.itemList.Take(5).Select(i => i.itemid));
 
-            // menu de items: todas las pestanas + busqueda
-            var pestanas = new List<string> { "@todos", "@skins" };
+            // menu de items: todas las pestanas + busqueda + cantidad personalizada + confirmar limpiar
+            var pestanas = new List<string> { "@todos", "@recientes", "@skins" };
             pestanas.AddRange(_categories);
             foreach (var tab in pestanas)
             {
@@ -892,40 +960,55 @@ namespace Oxide.Plugins
                     var json = CuiHelper.ToJson(ConstruirItems(s));
                     if (string.IsNullOrEmpty(json) || json.Length < 100)
                         { Puts("FALLO items[" + tab + "]: json vacio"); fallos++; }
+                    vistas++;
                 }
                 catch (Exception e) { Puts("FALLO items[" + tab + "]: " + e.Message); fallos++; }
             }
 
-            s.Category = "@todos"; s.Search = "rifle"; s.Page = 0;
-            try { CuiHelper.ToJson(ConstruirItems(s)); }
+            s.Category = "@todos"; s.Search = "rifle"; s.Page = 0; s.Amount = 250;
+            s.ConfirmarLimpiarHasta = Time.realtimeSinceStartup + 10f;
+            try
+            {
+                var json = CuiHelper.ToJson(ConstruirItems(s));
+                if (json.Contains(",5 ") || json.Contains("\"0,")) { Puts("FALLO: coordenadas con coma decimal"); fallos++; }
+                vistas++;
+            }
             catch (Exception e) { Puts("FALLO busqueda: " + e.Message); fallos++; }
 
-            // menu de skins: un item con muchas skins, uno sin ninguna
+            s.Search = "zzzz_no_existe";
+            try { CuiHelper.ToJson(ConstruirItems(s)); vistas++; }
+            catch (Exception e) { Puts("FALLO busqueda vacia: " + e.Message); fallos++; }
+
+            // menu de skins: un item con muchas skins, uno sin ninguna, en los dos modos
             var conSkins = ItemManager.FindItemDefinition("rifle.ak");
             var sinSkins = ItemManager.itemList.FirstOrDefault(i => !_skinsByItem.ContainsKey(i.shortname));
 
             foreach (var def in new[] { conSkins, sinSkins })
             {
                 if (def == null) continue;
-                var st = new State();
-                try
+                foreach (var dar in new[] { 0, def.itemid })
                 {
-                    var json = CuiHelper.ToJson(ConstruirSkins(def, 0UL, st));
-                    if (string.IsNullOrEmpty(json)) { Puts("FALLO skins[" + def.shortname + "]"); fallos++; }
+                    var st = new State { SkinDarItemId = dar };
+                    try
+                    {
+                        var json = CuiHelper.ToJson(ConstruirSkins(def, 0UL, st));
+                        if (string.IsNullOrEmpty(json)) { Puts("FALLO skins[" + def.shortname + "]"); fallos++; }
+                        vistas++;
+                    }
+                    catch (Exception e) { Puts("FALLO skins[" + def.shortname + "]: " + e.Message); fallos++; }
                 }
-                catch (Exception e) { Puts("FALLO skins[" + def.shortname + "]: " + e.Message); fallos++; }
             }
 
             // paginacion al final de la lista mas larga
             if (conSkins != null)
             {
                 var st = new State { SkinPage = 999 };
-                try { CuiHelper.ToJson(ConstruirSkins(conSkins, 0UL, st)); }
+                try { CuiHelper.ToJson(ConstruirSkins(conSkins, 0UL, st)); vistas++; }
                 catch (Exception e) { Puts("FALLO paginacion skins: " + e.Message); fallos++; }
             }
 
             Puts(fallos == 0
-                ? "SELFTEST OK - " + (pestanas.Count + 4) + " vistas construidas sin errores"
+                ? "SELFTEST OK - " + vistas + " vistas construidas sin errores"
                 : "SELFTEST con " + fallos + " fallos");
         }
 
@@ -1036,7 +1119,7 @@ namespace Oxide.Plugins
             sb.AppendLine("---");
             sb.AppendLine();
 
-            foreach (var cat in _categories)
+            foreach (var cat in _categories.OrderBy(k => k))
             {
                 var items = ItemManager.itemList
                     .Where(i => i.category.ToString() == cat)
