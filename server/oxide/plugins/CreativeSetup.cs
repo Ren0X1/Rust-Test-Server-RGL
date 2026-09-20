@@ -1,8 +1,10 @@
+using HarmonyLib;
 using Oxide.Core.Libraries.Covalence;
+using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
-    [Info("CreativeSetup", "local", "1.1.0")]
+    [Info("CreativeSetup", "local", "1.2.0")]
     [Description("Blueprints desbloqueados y workbench nivel 3 siempre, mediodia fijo y permisos")]
     class CreativeSetup : RustPlugin
     {
@@ -39,23 +41,24 @@ namespace Oxide.Plugins
             timer.Once(8f, ConcederPermisos);
 
             // Workbench 3 y blueprints para todo el mundo, siempre
-            timer.Every(10f, Repasar);
             foreach (var p in BasePlayer.activePlayerList) Preparar(p);
         }
 
         // ─────────────────────────────────────────────────────────────
         //  Workbench 3 permanente
         //
-        //  El nivel de mesa de trabajo lo llevan estos flags del jugador.
-        //  En el servidor no los toca nada mas (solo el cliente al entrar y
-        //  salir de una mesa), asi que puestos una vez se quedan puestos;
-        //  el repaso cada 10 s es por si el cliente los quita al alejarse.
+        //  El nivel de mesa sale de BasePlayer.currentCraftLevel, que vale 0
+        //  en cuanto no estas dentro del trigger de un banco. Con eso:
+        //   - PlayerMetabolism.UpdateWorkbenchFlags repinta los flags del
+        //     jugador cada poco (de ahi que aparecieran y desaparecieran), y
+        //   - PlayerBlueprints.CanCraft compara ese nivel con el que pide el
+        //     blueprint, asi que el servidor tambien rechazaba el crafteo.
+        //  Por eso se parchea el getter: siempre nivel 3, estes donde estes.
         // ─────────────────────────────────────────────────────────────
-        static bool TieneBanco(BasePlayer p)
+        [HarmonyPatch(typeof(BasePlayer), "currentCraftLevel", MethodType.Getter), AutoPatch]
+        static class ParcheNivelMesa
         {
-            return p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench1)
-                && p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench2)
-                && p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench3);
+            static void Postfix(ref float __result) { __result = 3f; }
         }
 
         static void PonerBanco(BasePlayer p)
@@ -63,17 +66,6 @@ namespace Oxide.Plugins
             p.SetPlayerFlag(BasePlayer.PlayerFlags.Workbench1, true);
             p.SetPlayerFlag(BasePlayer.PlayerFlags.Workbench2, true);
             p.SetPlayerFlag(BasePlayer.PlayerFlags.Workbench3, true);
-            p.cachedCraftLevel = 3f;
-            p.nextCheckTime = UnityEngine.Time.realtimeSinceStartup + 10f;
-        }
-
-        void Repasar()
-        {
-            foreach (var p in BasePlayer.activePlayerList)
-            {
-                if (p == null || !p.IsConnected || p.IsSleeping()) continue;
-                if (!TieneBanco(p)) PonerBanco(p);
-            }
         }
 
         void Preparar(BasePlayer player)
@@ -84,6 +76,20 @@ namespace Oxide.Plugins
         }
 
         void OnPlayerRespawned(BasePlayer player) => timer.Once(1f, () => Preparar(player));
+
+        // Para comprobar desde la consola o el panel que el parche esta puesto
+        [ConsoleCommand("creativo.estado")]
+        void CcEstado(ConsoleSystem.Arg arg)
+        {
+            foreach (var p in BasePlayer.activePlayerList)
+            {
+                var flags = (p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench1) ? "1" : "-")
+                          + (p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench2) ? "2" : "-")
+                          + (p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench3) ? "3" : "-");
+                Puts(p.displayName + ": nivel de mesa " + p.currentCraftLevel + " · flags " + flags);
+            }
+            if (BasePlayer.activePlayerList.Count == 0) Puts("No hay nadie conectado.");
+        }
 
         [ChatCommand("banco")]
         void CmdBanco(BasePlayer player, string cmd, string[] args)
