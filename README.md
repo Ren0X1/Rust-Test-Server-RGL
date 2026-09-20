@@ -81,7 +81,11 @@ En el spawner:
 | Comando | Qué hace |
 |---|---|
 | `/help` · `/guia` | 📖 **Guía del juego**: los monumentos **de tu mapa** (con distancia y botón para teletransportarte), eventos, puzzles y tarjetas, metro, labs submarinos, vehículos y comandos. |
-| `/attackheli` · `/heli` | 🚁 Te pone un **attack heli** delante, con el depósito lleno y el lanzacohetes cargado de **cohetes HV y bengalas** hasta arriba. |
+| `/mm` · `/attackheli` · `/heli` | 🚁 Te pone un **attack heli** delante, con el depósito lleno y el lanzacohetes cargado de **cohetes HV y bengalas** hasta arriba. |
+| `/remove` | 🔨 **Modo quitar**: apunta y clic izquierdo para borrar paredes, suelos y objetos, sean de quien sean. Otra vez `/remove` para salir. |
+| `/repair` | 🔧 Abre una **mesa de reparación** donde estés *(también cambia skins)*. |
+| `/hora` | 🕛 Hora del mapa: `/hora 12`, `/hora dia|noche|amanecer|atardecer`, `/hora parar`, `/hora auto`. |
+| `/deepsea` | 🌊 **Deep sea** (islas, ciudades flotantes y barcos fantasma): `/deepsea on` la abre, `/deepsea off` la cierra, `/deepsea` dice cómo está. |
 | `/scrap <cantidad>` | 🔩 Te da esa cantidad de chatarra. Ej: `/scrap 5000` *(máx. 100 000 de golpe)*. |
 | `/limpiar` | 🗑️ Borra todo tu inventario (lo mismo que el botón del `/menu`). |
 | `/crafteo` | ⚡ Activa o desactiva el **crafteo gratis e instantáneo** *(de fábrica viene activado)*. |
@@ -191,7 +195,7 @@ teleportpos x y z   # 📍 Teletransporte
 | **Vanish** | 👻 `/vanish` |
 | **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, el exportador de Markdown, y alimenta con skins al plugin Skins vía `OnSkinsFetch` |
 | **CreativeSetup** | ⭐ *Propio.* Desbloquea blueprints al entrar, fija el mediodía y concede los permisos. |
-| **CreativeTools** | ⭐ *Propio.* `/attackheli`, `/scrap` y el crafteo gratis e instantáneo (`/crafteo`). |
+| **CreativeTools** | ⭐ *Propio.* `/mm`, `/scrap`, `/remove`, `/repair`, `/hora`, `/deepsea` y el crafteo gratis e instantáneo (`/crafteo`). |
 | **GuiaRust** | ⭐ *Propio.* La guía `/help` con los monumentos del mapa y cómo funciona cada cosa. |
 | **ServerRates** | ⭐ *Propio.* Rates x3, stacks (100K recursos / x5 el resto) y el loot de los barriles directo al inventario. |
 

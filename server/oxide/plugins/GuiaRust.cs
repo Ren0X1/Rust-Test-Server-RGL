@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("GuiaRust", "local", "1.0.0")]
+    [Info("GuiaRust", "local", "1.1.0")]
     [Description("Guia en el juego (/help): monumentos del mapa, eventos, puzzles, metro, labs y vehiculos")]
     public class GuiaRust : RustPlugin
     {
@@ -202,7 +202,7 @@ namespace Oxide.Plugins
 
         static readonly List<Entrada> Vehiculos = new List<Entrada>
         {
-            new Entrada { Titulo = "Attack Helicopter", Etiqueta = "/attackheli · /heli",
+            new Entrada { Titulo = "Attack Helicopter", Etiqueta = "/mm · /attackheli · /heli",
                 Texto = "Te lo pone delante <color=#7f7>lleno de combustible, cohetes HV y bengalas</color>.\nAsiento de piloto para volar y el de atras para la torreta y los cohetes." },
             new Entrada { Titulo = "Minicopter y Scrap Heli", Etiqueta = "spawn",
                 Texto = "En F1:\n<color=#ff0>spawn minicopter.entity</color>\n<color=#ff0>spawn scraptransporthelicopter</color>\nFuncionan con low grade fuel: metelo en el deposito del morro." },
@@ -221,7 +221,13 @@ namespace Oxide.Plugins
             new Entrada { Titulo = "Menus del servidor", Etiqueta = "chat",
                 Texto = "<color=#ff0>/menu</color> o /items — spawner de todos los items, con skins.\n<color=#ff0>/sk</color> — skins del item que llevas en la mano.\n<color=#ff0>/skin</color> — caja de skins del plugin Skins.\n<color=#ff0>/bskin</color> — skins de bloques de construccion.\n<color=#ff0>/wskin &lt;id&gt;</color> — aplicar una skin por ID." },
             new Entrada { Titulo = "Creativo", Etiqueta = "chat",
-                Texto = "<color=#ff0>/attackheli</color> — attack heli cargado.\n<color=#ff0>/scrap &lt;cantidad&gt;</color> — chatarra.\n<color=#ff0>/limpiar</color> — vaciar el inventario.\n<color=#ff0>/crafteo</color> — crafteo gratis e instantaneo on/off.\n<color=#ff0>/unlockall</color> — desbloquear todos los blueprints.\n<color=#ff0>/dia</color> — fijar el mediodia." },
+                Texto = "<color=#ff0>/mm</color> · /attackheli — attack heli cargado.\n<color=#ff0>/scrap &lt;cantidad&gt;</color> — chatarra.\n<color=#ff0>/repair</color> — abre una mesa de reparacion donde estes.\n<color=#ff0>/limpiar</color> — vaciar el inventario.\n<color=#ff0>/crafteo</color> — crafteo gratis e instantaneo on/off.\n<color=#ff0>/unlockall</color> — desbloquear blueprints." },
+            new Entrada { Titulo = "Quitar construcciones", Etiqueta = "/remove",
+                Texto = "<color=#ff0>/remove</color> enciende el modo quitar: apunta a una pared, un suelo o cualquier objeto puesto y dale al <color=#ff0>clic izquierdo</color> para borrarlo, sea de quien sea.\nOtra vez <color=#ff0>/remove</color> y se apaga.\nSolo borra construcciones y objetos: ni jugadores ni bichos ni vehiculos." },
+            new Entrada { Titulo = "Hora del mapa", Etiqueta = "/hora",
+                Texto = "<color=#ff0>/hora</color> — ver la hora y si el tiempo corre.\n<color=#ff0>/hora 12</color> — poner esa hora (0 a 24).\n<color=#ff0>/hora dia|noche|amanecer|atardecer</color>.\n<color=#ff0>/hora parar</color> — congelar la hora.\n<color=#ff0>/hora auto</color> — que vuelva a correr." },
+            new Entrada { Titulo = "Deep sea", Etiqueta = "/deepsea",
+                Texto = "La zona de mar profundo con islas, ciudades flotantes y barcos fantasma.\n<color=#ff0>/deepsea on</color> — activarla y abrirla (tarda un rato en generarse).\n<color=#ff0>/deepsea off</color> — cerrarla y desactivarla.\n<color=#ff0>/deepsea</color> — ver el estado en la consola.\nSe entra por los portales que salen en el mar, en los bordes del mapa." },
             new Entrada { Titulo = "Volar y moverse", Etiqueta = "F1",
                 Texto = "<color=#ff0>noclip</color> — volar y atravesar paredes.\n<color=#ff0>teleportpos x y z</color> — ir a unas coordenadas.\n<color=#ff0>teleport2marker</color> — ir a la marca del mapa (G, clic derecho).\n<color=#ff0>debugcamera</color> — camara libre." },
             new Entrada { Titulo = "God y vanish", Etiqueta = "chat",
