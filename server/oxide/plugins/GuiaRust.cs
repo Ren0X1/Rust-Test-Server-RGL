@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("GuiaRust", "local", "1.2.0")]
+    [Info("GuiaRust", "local", "1.3.0")]
     [Description("Guia en el juego (/help): monumentos del mapa, eventos, puzzles, metro, labs y vehiculos")]
     public class GuiaRust : RustPlugin
     {
@@ -162,10 +162,22 @@ namespace Oxide.Plugins
                 Texto = "Tanque que da vueltas por Launch Site y dispara a todo lo que se mueve. Deja cajas muy buenas al destruirlo.\nPara que vuelva ya mismo sin esperar: <color=#ff0>bradley.quickrespawn</color> en F1." },
             new Entrada { Titulo = "Cargo Ship", Etiqueta = "evento · mar · activo",
                 Texto = "Barco enorme que da la vuelta al mapa con cientificos y cajas bloqueadas. Se sube con tirolina, helicoptero o barco.\nPara lanzarlo ahora: <color=#ff0>spawn.cargoshipevent</color> en F1." },
-            new Entrada { Titulo = "Todos los eventos", Etiqueta = "activos",
-                Texto = "Airdrop, Chinook, Cargo, patrulla de F15, Patrol Heli, Bradley de carretera y vendedor ambulante estan <color=#7f7>activados</color> con los tiempos normales de Rust.\n<color=#ff0>events.print_server_events</color> — verlos y cuanto tardan.\n<color=#ff0>eventschedule.triggerevent &lt;nombre&gt;</color> — lanzar uno ya." },
-            new Entrada { Titulo = "Airdrop", Etiqueta = "caja del cielo",
-                Texto = "Sacate una <color=#ff0>supply signal</color> desde /menu (busca 'supply'), tirala al suelo y un avion suelta una caja de suministros donde cae el humo." },
+            new Entrada { Titulo = "Todos los eventos", Etiqueta = "resumen · activos",
+                Texto = "airdrop (9-18 h) · chinook (27-54 h) · cargo (45-78 h) · f15 (15-30 h) · patrol_heli (36-54 h) · bradley_road (7,5-18 h) · travelling_vendor (45-78 h).\n<color=#ff0>events.print_server_events</color> — verlos todos.\n<color=#ff0>eventschedule.triggerevent &lt;nombre&gt;</color> — lanzar uno ya.\n<color=#ff0>eventschedule.killallevents</color> — cortarlos todos." },
+            new Entrada { Titulo = "Que salgan mas seguido", Etiqueta = "ajustar tiempos",
+                Texto = "<color=#ff0>events.set_event_min_delay &lt;evento&gt; &lt;segundos&gt;</color>\n<color=#ff0>events.set_event_max_delay &lt;evento&gt; &lt;segundos&gt;</color>\nEjemplo para un airdrop cada 5-10 minutos:\n<color=#ff0>events.set_event_min_delay airdrop 300</color>\n<color=#ff0>events.set_event_max_delay airdrop 600</color>" },
+            new Entrada { Titulo = "Airdrop", Etiqueta = "avion · cada 9-18 h",
+                Texto = "Un avion cruza el mapa y suelta una caja de suministros con loot bueno.\nPara provocarlo: sacate una <color=#ff0>supply signal</color> en /menu, tirala al suelo y cae donde sale el humo.\nO en F1: <color=#ff0>eventschedule.triggerevent airdrop</color>." },
+            new Entrada { Titulo = "Chinook CH47", Etiqueta = "cada 27-54 h",
+                Texto = "El helicoptero de transporte deja una <color=#7af>caja bloqueada</color> en un monumento (o suelta cientificos). Hay que hackearla y esperar.\nPara lanzarlo donde estas: <color=#ff0>spawn.ch47event</color> en F1." },
+            new Entrada { Titulo = "Patrulla de F15", Etiqueta = "cada 15-30 h",
+                Texto = "Cazas que sobrevuelan el mapa. Espectaculo aereo y aviso de que algo se mueve.\nEn F1: <color=#ff0>eventschedule.triggerevent f15</color>." },
+            new Entrada { Titulo = "Bradley de carretera", Etiqueta = "convoy · cada 7-18 h",
+                Texto = "Un Bradley patrullando las carreteras, fuera de Launch Site. Mismo loot bestial al reventarlo, pero te lo encuentras de camino.\nEn F1: <color=#ff0>eventschedule.triggerevent bradley_road</color>." },
+            new Entrada { Titulo = "Vendedor ambulante", Etiqueta = "cada 45-78 h",
+                Texto = "Un camion vendedor que va por las carreteras parando cada poco. Se le compra con chatarra.\nEn F1: <color=#ff0>travellingvendor.startevent</color>." },
+            new Entrada { Titulo = "Halloween y Navidad", Etiqueta = "por fechas",
+                Texto = "Activados: saltan solos en sus fechas.\nHalloween trae espantapajaros y zombis; Navidad, regalos y decoracion.\nSe fuerzan con <color=#ff0>halloween.enabled</color> y <color=#ff0>xmas.enabled</color> mas sus poblaciones." },
             new Entrada { Titulo = "Deep sea", Etiqueta = "mar profundo",
                 Texto = "Zona de mar profundo con islas, ciudades flotantes, barcos fantasma y patrullas de RHIB.\nSe entra por los <color=#7af>portales</color> que salen en el mar, a 2750 m del centro en cada direccion.\n<color=#ff0>/deepsea on</color> la abre (tarda unos minutos en generarse) y <color=#ff0>/deepsea off</color> la cierra." },
         };

@@ -119,7 +119,9 @@ Eres **owner** (auth level 2), así que lo tienes todo abierto:
 - 🖱️ **F1 → pestaña de items**: buscador visual para spawnear cualquier cosa.
 - ⌨️ `inventory.give <item> <cantidad>` → por ejemplo `inventory.give wood 10000`
 - 👥 `inventory.giveto <item> <jugador> <cantidad> <skin>`
-- 🔓 **Todos los blueprints se desbloquean solos al entrar.** Si hiciera falta: `/unlockall`
+- 🔓 **Todos los blueprints desbloqueados y workbench nivel 3 siempre**, estés donde estés:
+  puedes craftear cualquier cosa desde el inventario sin buscar una mesa. Si algo se
+  descuadra: `/banco` (o `/unlockall` solo para los blueprints).
 - ⚡ **Crafteo gratis e instantáneo** (plugin CreativeTools, se quita con `/crafteo`): no gasta
   materiales y el item sale al momento, sin cola. *(El `craft.instant` nativo no vale: solo
   funciona para admins y aun así tarda 1 s por unidad.)* El modo creativo, además, quita el
