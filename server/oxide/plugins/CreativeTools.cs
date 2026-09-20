@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("CreativeTools", "local", "1.0.0")]
+    [Info("CreativeTools", "local", "1.1.0")]
     [Description("Attack heli con el deposito lleno, /scrap y crafteo gratis e instantaneo")]
     class CreativeTools : RustPlugin
     {
@@ -67,18 +67,49 @@ namespace Oxide.Plugins
             heli.OwnerID = player.userID;
             heli.Spawn();
 
-            // El deposito es una sub-entidad que se crea al spawnear: se llena un instante despues
+            // El deposito y el lanzacohetes son sub-entidades que se crean al
+            // spawnear: se llenan un instante despues
             timer.Once(0.5f, () =>
             {
                 if (heli == null || heli.IsDestroyed) return;
                 heli.GetFuelSystem()?.FillFuel();
+                var cargado = CargarMuniciones(heli as AttackHelicopter);
+                Msg(player, cargado
+                    ? "Attack heli listo: <color=#7f7>combustible, cohetes HV y bengalas al maximo</color>."
+                    : "Attack heli creado con el deposito lleno (no se pudo cargar la municion).");
             });
-
-            Msg(player, "Attack heli creado con el deposito lleno.");
         }
 
         [ChatCommand("heli")]
         void CmdHeli(BasePlayer player, string cmd, string[] args) => CmdAttackHeli(player, cmd, args);
+
+        // El contenedor de cohetes del attack heli reserva el ultimo hueco para
+        // las bengalas y el resto para cohetes. Se llena cada hueco a tope.
+        bool CargarMuniciones(AttackHelicopter heli)
+        {
+            if (heli == null) return false;
+            var cohetes = heli.GetRockets();
+            if (cohetes == null || cohetes.inventory == null) return false;
+
+            var inv = cohetes.inventory;
+            var defCohete = cohetes.hvRocketDef;
+            var defBengala = cohetes.flareItemDef;
+            if (defCohete == null || defBengala == null) return false;
+
+            var huecos = inv.capacity;
+            for (var slot = 0; slot < huecos; slot++)
+            {
+                if (inv.GetSlot(slot) != null) continue;
+                var def = slot == huecos - 1 ? defBengala : defCohete;   // ultimo hueco: bengalas
+                var item = ItemManager.Create(def, Math.Max(1, def.stackable));
+                if (item == null) continue;
+                if (!item.MoveToContainer(inv, slot, false)) item.Remove();
+            }
+
+            inv.MarkDirty();
+            cohetes.SendNetworkUpdate();
+            return true;
+        }
 
         // ─────────────────────────────────────────────────────────────
         //  /scrap <cantidad>

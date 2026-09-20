@@ -7,11 +7,21 @@
 
 ## ⚡ Inicio rápido
 
-| | |
+**Todo en uno: doble clic en `RGL.bat`.** Un menú con todo:
+
+| Opción | Qué hace |
 |---|---|
-| 🧩 **1. Instalar** | Doble clic en **`instalar.bat`** *(descarga SteamCMD + servidor + Oxide, ~6 GB)* |
-| ▶️ **2. Arrancar** | Doble clic en **`start.bat`** y espera a `Server startup complete` |
-| 🎮 **3. Conectar** | En Rust pulsa **F1** y escribe: `client.connect localhost:28015` |
+| **1** | ▶️ Arrancar servidor + panel web *(se elige sola a los 10 s)* |
+| **2** | 🔄 Actualizar servidor y Oxide, y arrancar |
+| **3** | 🧩 Instalar o reparar todo *(SteamCMD + servidor + Oxide, ~6 GB)* |
+| **4** | 🖥️ Abrir solo el panel web |
+| **5** | 🧩 Actualizar solo Oxide |
+
+Arriba del menú te dice qué tienes instalado y qué te falta. Luego, en Rust pulsa **F1** y
+escribe `client.connect localhost:28015`.
+
+*(Los `.bat` sueltos de siempre siguen ahí: `instalar.bat`, `start.bat`, `panel.bat`,
+`actualizar_servidor.bat` y `actualizar_oxide.bat`.)*
 
 > 🖥️ `start.bat` abre también el **panel web** en `http://127.0.0.1:28080` (ver abajo).
 > ⏱️ El primer arranque tarda **varios minutos** porque genera el mapa (4000 es un mapa grande).
@@ -70,7 +80,8 @@ En el spawner:
 
 | Comando | Qué hace |
 |---|---|
-| `/attackheli` · `/heli` | 🚁 Te pone un **attack heli** delante, con el depósito de combustible lleno. |
+| `/help` · `/guia` | 📖 **Guía del juego**: los monumentos **de tu mapa** (con distancia y botón para teletransportarte), eventos, puzzles y tarjetas, metro, labs submarinos, vehículos y comandos. |
+| `/attackheli` · `/heli` | 🚁 Te pone un **attack heli** delante, con el depósito lleno y el lanzacohetes cargado de **cohetes HV y bengalas** hasta arriba. |
 | `/scrap <cantidad>` | 🔩 Te da esa cantidad de chatarra. Ej: `/scrap 5000` *(máx. 100 000 de golpe)*. |
 | `/limpiar` | 🗑️ Borra todo tu inventario (lo mismo que el botón del `/menu`). |
 | `/crafteo` | ⚡ Activa o desactiva el **crafteo gratis e instantáneo** *(de fábrica viene activado)*. |
@@ -156,6 +167,7 @@ teleportpos x y z   # 📍 Teletransporte
 |---|---|
 | `start.bat` | 🔌 Puerto, seed, tamaño del mapa, nombre del servidor *(o desde el panel web)*. |
 | `panel\` | 🖥️ Panel web: `server.js` (backend) y `public\` (interfaz). |
+| `RGL.bat` | 🎛️ El menú todo en uno: instalar, actualizar, arrancar y panel. |
 | `server\server\skintest\cfg\server.cfg` | 🌍 Ajustes del mundo (se ejecuta al arrancar). |
 | `server\server\skintest\cfg\users.cfg` | 👑 Quién es admin *(lleva un SteamID64, cámbialo por el tuyo si clonas el repo)*. |
 | `server\oxide\plugins\` | 🧩 Plugins. Suelta un `.cs` aquí y se carga solo, **sin reiniciar**. |
@@ -180,6 +192,7 @@ teleportpos x y z   # 📍 Teletransporte
 | **SkinTestMenu** | ⭐ *Propio.* Los menús `/menu` y `/sk`, el exportador de Markdown, y alimenta con skins al plugin Skins vía `OnSkinsFetch` |
 | **CreativeSetup** | ⭐ *Propio.* Desbloquea blueprints al entrar, fija el mediodía y concede los permisos. |
 | **CreativeTools** | ⭐ *Propio.* `/attackheli`, `/scrap` y el crafteo gratis e instantáneo (`/crafteo`). |
+| **GuiaRust** | ⭐ *Propio.* La guía `/help` con los monumentos del mapa y cómo funciona cada cosa. |
 | **ServerRates** | ⭐ *Propio.* Rates x3, stacks (100K recursos / x5 el resto) y el loot de los barriles directo al inventario. |
 
 ---
@@ -205,6 +218,9 @@ skintest.exportmd
 ## 🔄 Mantenimiento
 
 Cuando Facepunch saque un parche y el servidor deje de arrancar:
+**`RGL.bat` → opción 2** (actualiza el servidor, luego Oxide, y arranca).
+
+A mano es lo mismo en dos pasos:
 
 1. ▶️ `actualizar_servidor.bat`
 2. ▶️ `actualizar_oxide.bat` ← **siempre después**, porque el paso 1 sobrescribe Oxide.
