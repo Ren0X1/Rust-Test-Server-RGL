@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("GuiaRust", "local", "1.1.0")]
+    [Info("GuiaRust", "local", "1.2.0")]
     [Description("Guia en el juego (/help): monumentos del mapa, eventos, puzzles, metro, labs y vehiculos")]
     public class GuiaRust : RustPlugin
     {
@@ -158,14 +158,16 @@ namespace Oxide.Plugins
                 Texto = "1) Consigue <color=#ff0>diesel</color> (/menu, busca diesel).\n2) En el edificio de control elige el recurso: piedra, metal, azufre o HQM.\n3) Echa el diesel en el motor y dale al boton rojo.\n4) Recoge el material en las cintas transportadoras.\nCada barril dura un par de minutos. Aqui la produccion va <color=#7f7>x3</color>." },
             new Entrada { Titulo = "Patrol Helicopter", Etiqueta = "evento · pelea",
                 Texto = "Helicoptero que patrulla y dispara a quien vea. Tirarlo deja cajas quemadas con armas y munición.\nPara llamarlo a donde estas: <color=#ff0>heli.calltome</color> en F1.\nPara que no salga solo: heli.guns 0 o desactivar el evento." },
-            new Entrada { Titulo = "Bradley APC", Etiqueta = "launch site",
-                Texto = "Tanque que da vueltas por Launch Site. Deja cajas muy buenas al destruirlo.\nEn este servidor esta <color=#f77>desactivado</color> (bradley.enabled false en server.cfg). Se activa desde el panel web o con <color=#ff0>bradley.enabled true</color>." },
-            new Entrada { Titulo = "Cargo Ship", Etiqueta = "evento · mar",
-                Texto = "Barco enorme que da la vuelta al mapa con cientificos y cajas bloqueadas. Se sube con tirolina, helicoptero o barco.\nAqui esta desactivado: <color=#ff0>cargoship.event_enabled true</color> para activarlo." },
+            new Entrada { Titulo = "Bradley APC", Etiqueta = "launch site · activo",
+                Texto = "Tanque que da vueltas por Launch Site y dispara a todo lo que se mueve. Deja cajas muy buenas al destruirlo.\nPara que vuelva ya mismo sin esperar: <color=#ff0>bradley.quickrespawn</color> en F1." },
+            new Entrada { Titulo = "Cargo Ship", Etiqueta = "evento · mar · activo",
+                Texto = "Barco enorme que da la vuelta al mapa con cientificos y cajas bloqueadas. Se sube con tirolina, helicoptero o barco.\nPara lanzarlo ahora: <color=#ff0>spawn.cargoshipevent</color> en F1." },
+            new Entrada { Titulo = "Todos los eventos", Etiqueta = "activos",
+                Texto = "Airdrop, Chinook, Cargo, patrulla de F15, Patrol Heli, Bradley de carretera y vendedor ambulante estan <color=#7f7>activados</color> con los tiempos normales de Rust.\n<color=#ff0>events.print_server_events</color> — verlos y cuanto tardan.\n<color=#ff0>eventschedule.triggerevent &lt;nombre&gt;</color> — lanzar uno ya." },
             new Entrada { Titulo = "Airdrop", Etiqueta = "caja del cielo",
                 Texto = "Sacate una <color=#ff0>supply signal</color> desde /menu (busca 'supply'), tirala al suelo y un avion suelta una caja de suministros donde cae el humo." },
-            new Entrada { Titulo = "Eventos de temporada", Etiqueta = "halloween · navidad",
-                Texto = "Desactivados en server.cfg para que no molesten:\n<color=#ff0>halloween.enabled true</color>\n<color=#ff0>xmas.enabled true</color>\nSe pueden activar desde el panel web sin reiniciar." },
+            new Entrada { Titulo = "Deep sea", Etiqueta = "mar profundo",
+                Texto = "Zona de mar profundo con islas, ciudades flotantes, barcos fantasma y patrullas de RHIB.\nSe entra por los <color=#7af>portales</color> que salen en el mar, a 2750 m del centro en cada direccion.\n<color=#ff0>/deepsea on</color> la abre (tarda unos minutos en generarse) y <color=#ff0>/deepsea off</color> la cierra." },
         };
 
         static readonly List<Entrada> Puzzles = new List<Entrada>

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("CreativeTools", "local", "1.2.0")]
+    [Info("CreativeTools", "local", "1.3.0")]
     [Description("Attack heli cargado, /scrap, crafteo gratis, hora del mapa, deep sea, /remove y /repair")]
     class CreativeTools : RustPlugin
     {
@@ -26,6 +26,10 @@ namespace Oxide.Plugins
 
             // Alcance del /remove, en metros
             public float AlcanceRemove = 12f;
+
+            // La mesa de reparacion vanilla solo deja poner skins que tengas
+            // compradas en Steam. Con esto se aplica cualquiera.
+            public bool SkinsSinRestriccionEnLaMesa = true;
         }
 
         Configuracion cfg;
@@ -325,6 +329,32 @@ namespace Oxide.Plugins
         }
 
         readonly Dictionary<ulong, RepairBench> _mesas = new Dictionary<ulong, RepairBench>();
+
+        // RepairBench.ChangeSkin comprueba CheckSkinOwnership y rechaza las skins
+        // que no tengas en tu cuenta de Steam. Aqui se aplica a mano y se cancela
+        // la version de Rust devolviendo algo distinto de null.
+        object OnItemSkinChange(int skinInventoryId, Item item, RepairBench mesa, BasePlayer player)
+        {
+            if (!cfg.SkinsSinRestriccionEnLaMesa || item == null || player == null) return null;
+
+            var skin = skinInventoryId == 0 ? 0UL : ItemDefinition.FindSkin(item.info.itemid, skinInventoryId);
+            if (skin == item.skin) return null;
+
+            item.skin = skin;
+            item.MarkDirty();
+
+            var held = item.GetHeldEntity();
+            if (held != null)
+            {
+                held.skinID = skin;
+                held.SendNetworkUpdate();
+            }
+
+            Msg(player, skin == 0
+                ? "Skin quitada."
+                : "Skin aplicada: <color=#ff0>" + skin + "</color>");
+            return true;
+        }
 
         void OnLootEntityEnd(BasePlayer player, BaseCombatEntity entity)
         {

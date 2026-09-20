@@ -156,8 +156,14 @@ teleportpos x y z   # 📍 Teletransporte
 - 🏗️ **Modo creativo nativo para todo el servidor** (`creative.allusers`): construir gratis,
   colocar sin restricciones y sin coste de recursos.
 - ☀️ **Siempre mediodía** para ver bien las skins (`env.time 12`, sin paso del tiempo).
-- 🕊️ Sin decay, sin radiación, sin colapso de estructuras, sin NPCs ni eventos.
+- 🕊️ Sin decay, sin radiación y sin colapso de estructuras.
   ⚔️ **PvP activado** (`server.pve false`): los jugadores se pueden hacer daño entre ellos.
+- 💥 **Eventos como en un servidor normal**: airdrops, Chinook, Cargo Ship, patrulla de F15,
+  Patrol Heli, Bradley de carretera, vendedor ambulante y el **Bradley de Launch Site**,
+  con NPCs activos (`ai.think`, `ai.move`) y los tiempos normales de Rust.
+  Se ven con `events.print_server_events` y se lanza uno ya con `eventschedule.triggerevent <nombre>`.
+- 🌊 **Deep sea**: se abre y se cierra con `/deepsea on` y `/deepsea off`. Los portales salen
+  en el mar, a 2750 m del centro del mapa en cada dirección.
 - ✖️3️⃣ **Servidor x3** (plugin ServerRates): recolección (árboles, piedras, animales, plantas,
   lo que se recoge del suelo, canteras, excavadora) y loot de barriles y cajas multiplicados
   por 3. Al **romper un barril** el loot va directo a tu inventario, no cae al suelo.
