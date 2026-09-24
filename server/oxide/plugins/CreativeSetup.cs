@@ -4,7 +4,7 @@ using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
-    [Info("CreativeSetup", "local", "1.2.0")]
+    [Info("CreativeSetup", "local", "1.3.0")]
     [Description("Blueprints desbloqueados y workbench nivel 3 siempre, mediodia fijo y permisos")]
     class CreativeSetup : RustPlugin
     {
@@ -68,9 +68,27 @@ namespace Oxide.Plugins
             p.SetPlayerFlag(BasePlayer.PlayerFlags.Workbench3, true);
         }
 
+        // ─────────────────────────────────────────────────────────────
+        //  Modo creativo de verdad, el del cliente
+        //
+        //  creative.allusers solo vale para el servidor: IsInCreativeMode es
+        //  "allUsers || flag del jugador", asi que con allusers el servidor ni
+        //  pone el flag ni avisa al cliente, y el cliente sigue pidiendo
+        //  materiales para encender el boton Craft.
+        //  creative.togglecreativemodeuser si hace las dos cosas: el flag (que
+        //  se replica) y el comando debug.setcreative_ui, que es el que pone
+        //  el inventario en modo creativo. Se replica aqui a mano.
+        // ─────────────────────────────────────────────────────────────
+        static void PonerCreativo(BasePlayer p)
+        {
+            p.SetPlayerFlag(BasePlayer.PlayerFlags.CreativeMode, true);
+            p.Command("debug.setcreative_ui", true);
+        }
+
         void Preparar(BasePlayer player)
         {
             if (player == null || !player.IsConnected) return;
+            PonerCreativo(player);
             PonerBanco(player);
             UnlockAll(player);
         }
@@ -86,7 +104,8 @@ namespace Oxide.Plugins
                 var flags = (p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench1) ? "1" : "-")
                           + (p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench2) ? "2" : "-")
                           + (p.HasPlayerFlag(BasePlayer.PlayerFlags.Workbench3) ? "3" : "-");
-                Puts(p.displayName + ": nivel de mesa " + p.currentCraftLevel + " · flags " + flags);
+                Puts(p.displayName + ": nivel de mesa " + p.currentCraftLevel + " · flags " + flags
+                     + " · creativo " + (p.HasPlayerFlag(BasePlayer.PlayerFlags.CreativeMode) ? "SI" : "NO"));
             }
             if (BasePlayer.activePlayerList.Count == 0) Puts("No hay nadie conectado.");
         }
