@@ -84,6 +84,8 @@ En el spawner:
 | `/mm` · `/attackheli` · `/heli` | 🚁 Te pone un **attack heli** delante, con el depósito lleno y el lanzacohetes cargado de **cohetes HV y bengalas** hasta arriba. |
 | `/remove` | 🔨 **Modo quitar**: apunta y clic izquierdo para borrar paredes, suelos y objetos, sean de quien sean. Otra vez `/remove` para salir. |
 | `/repair` | 🔧 Abre una **mesa de reparación** donde estés *(también cambia skins)*. |
+| `/materiales` · `/mats` | 🧱 Llena la mochila de recursos y componentes para que el **botón Craft del inventario se encienda**. Lo que gastes se te devuelve. |
+| `/craftear <item> [n]` | ⚡ Craftea **sin materiales y sin botón**: lo hace el servidor. Ej: `/craftear rifle.ak 2`. |
 | `/hora` | 🕛 Hora del mapa: `/hora 12`, `/hora dia|noche|amanecer|atardecer`, `/hora parar`, `/hora auto`. |
 | `/deepsea` | 🌊 **Deep sea** (islas, ciudades flotantes y barcos fantasma): `/deepsea on` la abre, `/deepsea off` la cierra, `/deepsea` dice cómo está. |
 | `/scrap <cantidad>` | 🔩 Te da esa cantidad de chatarra. Ej: `/scrap 5000` *(máx. 100 000 de golpe)*. |
@@ -126,6 +128,9 @@ Eres **owner** (auth level 2), así que lo tienes todo abierto:
   materiales y el item sale al momento, sin cola. *(El `craft.instant` nativo no vale: solo
   funciona para admins y aun así tarda 1 s por unidad.)* El modo creativo, además, quita el
   coste de recursos al construir.
+  ⚠️ El **botón Craft del inventario** lo decide el cliente mirando los materiales que llevas:
+  si no los tienes sale en gris y el servidor ni se entera. Por eso están `/materiales`
+  (llena la mochila y luego se te devuelve todo) y `/craftear <item>` (lo hace el servidor).
 
 ### 🧰 Otros comandos útiles
 

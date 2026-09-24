@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Oxide.Plugins
@@ -30,6 +32,20 @@ namespace Oxide.Plugins
             // La mesa de reparacion vanilla solo deja poner skins que tengas
             // compradas en Steam. Con esto se aplica cualquiera.
             public bool SkinsSinRestriccionEnLaMesa = true;
+
+            // /materiales: lo que hace falta para que el boton Craft del
+            // inventario se encienda. El cliente mira TU mochila para decidir
+            // si puedes craftear, asi que hay que tener los materiales; al
+            // craftear se devuelven solos (crafteo gratis).
+            [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+            public List<string> Materiales = new List<string>
+            {
+                "wood", "stones", "metal.fragments", "metal.refined", "sulfur", "gunpowder",
+                "cloth", "leather", "scrap", "lowgradefuel", "charcoal", "fat.animal",
+                "metalpipe", "metalblade", "metalspring", "gears", "rope", "sewingkit",
+                "tarp", "sheetmetal", "roadsigns", "riflebody", "semibody", "smgbody",
+                "ducttape", "glue", "propanetank", "techparts", "fuse", "bone.fragments"
+            };
         }
 
         Configuracion cfg;
@@ -383,13 +399,133 @@ namespace Oxide.Plugins
             _mesas.Clear();
         }
 
+        // ─────────────────────────────────────────────────────────────
+        //  /materiales — llena la mochila para poder craftear en el inventario
+        //
+        //  El boton "Craft" lo decide el cliente mirando TUS materiales: si no
+        //  los tiene los pinta en gris y ni siquiera avisa al servidor, asi que
+        //  desde aqui no hay forma de desbloquearlo. Con los materiales encima
+        //  el boton se enciende y al craftear el plugin te los devuelve, o sea
+        //  que sale gratis igual.
+        // ─────────────────────────────────────────────────────────────
+        [ChatCommand("materiales")]
+        void CmdMateriales(BasePlayer player, string cmd, string[] args) => DarMateriales(player);
+
+        [ChatCommand("mats")]
+        void CmdMats(BasePlayer player, string cmd, string[] args) => DarMateriales(player);
+
+        void DarMateriales(BasePlayer player)
+        {
+            int dados = 0, sinSitio = 0;
+            foreach (var shortname in cfg.Materiales)
+            {
+                var def = ItemManager.FindItemDefinition(shortname);
+                if (def == null) continue;
+                if (player.inventory.GetAmount(def.itemid) > 0) continue;   // ya lo tiene
+
+                var item = ItemManager.Create(def, Math.Max(1, def.stackable));
+                if (item == null) continue;
+                if (player.inventory.containerMain.itemList.Count >= player.inventory.containerMain.capacity)
+                { item.Remove(); sinSitio++; continue; }
+
+                if (!item.MoveToContainer(player.inventory.containerMain)) { item.Remove(); sinSitio++; continue; }
+                dados++;
+            }
+
+            Msg(player, "Materiales: <color=#7f7>" + dados + "</color> tipos en la mochila"
+                + (sinSitio > 0 ? " · <color=#f77>" + sinSitio + " no caben</color> (vacia algo y repite)" : "")
+                + ". Ahora el boton Craft del inventario se enciende y lo que gastes se te devuelve.");
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        //  /craftear — craftear sin tener materiales, saltandose el boton
+        // ─────────────────────────────────────────────────────────────
+        [ChatCommand("craftear")]
+        void CmdCraftear(BasePlayer player, string cmd, string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Msg(player, "Uso: <color=#ff0>/craftear &lt;item&gt; [cantidad]</color>   ej: /craftear rifle.ak 2");
+                return;
+            }
+
+            var def = ItemManager.FindItemDefinition(args[0]);
+            if (def == null)
+            {
+                var busca = args[0].ToLower();
+                def = ItemManager.itemList.FirstOrDefault(i => i.shortname.ToLower().Contains(busca)
+                    || (i.displayName != null && i.displayName.english.ToLower().Contains(busca)));
+            }
+            if (def == null) { Msg(player, "No encuentro ese item. Mira los nombres en <color=#ff0>/menu</color>."); return; }
+
+            var bp = ItemManager.FindBlueprint(def);
+            if (bp == null) { Msg(player, NombreDe(def) + " no se craftea; sacalo con <color=#ff0>/menu</color>."); return; }
+
+            var cantidad = 1;
+            if (args.Length > 1) int.TryParse(args[1], out cantidad);
+            cantidad = Math.Max(1, Math.Min(cantidad, 100));
+
+            var hechos = 0;
+            for (var i = 0; i < cantidad; i++)
+                if (player.inventory.crafting.CraftItem(bp, player, null, 1, 0, null, false, 0)) hechos++;
+
+            Msg(player, "Crafteado <color=#ff0>" + NombreDe(def) + "</color> x" + hechos + " (gratis y al momento).");
+        }
+
+        static string NombreDe(ItemDefinition def)
+        {
+            return def.displayName != null && !string.IsNullOrEmpty(def.displayName.english)
+                ? def.displayName.english : def.shortname;
+        }
+
+        // Diagnostico: se enciende con "creativo.tracecraft true" y escribe en
+        // la consola cada paso del crafteo, para ver donde se corta
+        static bool _traza;
+
+        [ConsoleCommand("creativo.tracecraft")]
+        void CcTraza(ConsoleSystem.Arg arg)
+        {
+            _traza = arg.GetBool(0, !_traza);
+            Puts("Traza de crafteo: " + (_traza ? "ENCENDIDA" : "apagada"));
+        }
+
+        // Prueba el crafteo por el mismo camino que usa el juego, sin tocar el cliente
+        [ConsoleCommand("creativo.testcraft")]
+        void CcTestCraft(ConsoleSystem.Arg arg)
+        {
+            var shortname = arg.GetString(0, "rifle.ak");
+            var jugador = BasePlayer.activePlayerList.FirstOrDefault();
+            if (jugador == null) { Puts("No hay nadie conectado."); return; }
+
+            var def = ItemManager.FindItemDefinition(shortname);
+            if (def == null) { Puts("No existe el item " + shortname); return; }
+            var bp = ItemManager.FindBlueprint(def);
+            if (bp == null) { Puts(shortname + " no tiene blueprint (no se puede craftear)."); return; }
+
+            var antes = jugador.inventory.GetAmount(def.itemid);
+            var crafter = jugador.inventory.crafting;
+            var ok = crafter.CraftItem(bp, jugador, null, 1, 0, null, false, 0);
+            Puts("testcraft " + shortname + ": CraftItem=" + ok + " · cola=" + crafter.queue.Count);
+            timer.Once(0.6f, () =>
+            {
+                var ahora = jugador.inventory.GetAmount(def.itemid);
+                Puts("testcraft " + shortname + ": tenia " + antes + ", ahora " + ahora
+                     + (ahora > antes ? " -> INSTANTANEO OK" : " -> NO ha llegado el item"));
+            });
+        }
+
         object CanCraft(ItemCrafter crafter, ItemBlueprint bp, int amount, bool free)
         {
+            if (_traza) Puts("CanCraft: " + (bp != null && bp.targetItem != null ? bp.targetItem.shortname : "?")
+                             + " x" + amount + " free=" + free + " -> permitido");
             return cfg.CrafteoGratisEInstantaneo ? (object)true : null;
         }
 
         object OnItemCraft(ItemCraftTask task, BasePlayer owner, Item fromTempBlueprint)
         {
+            if (_traza) Puts("OnItemCraft: " + (owner != null ? owner.displayName : "?")
+                             + " " + task.blueprint.targetItem.shortname + " x" + task.amount
+                             + " cfg=" + cfg.CrafteoGratisEInstantaneo);
             if (!cfg.CrafteoGratisEInstantaneo || owner == null) return null;
 
             if (task.takenItems != null)
